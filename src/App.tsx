@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Header from './components/Header'
 import Home from './pages/Home'
 import Products from './pages/Products'
+import Product from './pages/Product'
+import NewProduct from './pages/NewProduct'
 import SignUp from './pages/SignUp'
 
 const App = () => (
@@ -45,7 +47,9 @@ const BadRequest = () => (
 const Main = () => (
     <Routes>
       <Route path='/' element={<Home />} />
-      <Route path='/products' element={<Products />} />
+      <Route path='/products' element={<Products />}/>
+      <Route path='/products/new' element={<NewProduct />}/>
+      <Route path='/products/:id' element={<Product />}/>
       <Route path='/signup' element={<SignUp />} />
       <Route path='/403' element={<AccessDenied />} />
       <Route path='/400' element={<BadRequest />} />
