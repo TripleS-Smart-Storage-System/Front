@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -11,3 +12,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.navbar a{
+  color: white;
+  text-decoration: none;
+  margin: 20px;
+}
+
+.main{
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px 20px;
+}
+
+.current {
+  border-bottom: 4px solid white;
+}
+
