@@ -59,7 +59,7 @@ class SignUpForm extends React.Component<{}, { input: LooseObject, errors: Loose
   
     if(this.validate()){
         const data: NewUserData = this.state.input as Input
-        const token = axios.post(config.serverUrl + '/signup', data).then(response => console.log(response))
+        axios.post(config.serverUrl + '/signup', data).then(response => console.log(response))
         let input = new Input();
         this.setState({input:input});
     }

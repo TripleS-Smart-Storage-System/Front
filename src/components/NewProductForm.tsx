@@ -39,7 +39,7 @@ class SignUpForm extends React.Component<{}, { input: LooseObject }> {
     event.preventDefault();
 
     const data: NewProductData = this.state.input as Input
-    const token = axios.post(config.serverUrl + '/products/new', data).then(response => console.log(response))
+    axios.post(config.serverUrl + '/products/new', data).then(response => console.log(response))
     this.setState({input: new Input()});
   }
      
