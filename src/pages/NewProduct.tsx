@@ -3,15 +3,15 @@ import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
 
 const NewProductForm = () => (
   <Form>
-    <Form.Group className="mb-3" controlId="formBasicEmail">
+    <Form.Group className="mb-3" controlId="formBasicName">
       <Form.Label>Name</Form.Label>
       <Form.Control required type="text" placeholder="Enter name" />
     </Form.Group>
-    <Form.Group className="mb-3" controlId="formBasicEmail">
+    <Form.Group className="mb-3" controlId="formBasicUnit">
       <Form.Label>Unit</Form.Label>
       <Form.Control required type="text" placeholder="Enter unit" />
     </Form.Group>
-    <Form.Group className="mb-3" controlId="newProsuctForm.ControlTextarea">
+    <Form.Group className="mb-3" controlId="newProductForm.ControlTextarea">
     <Form.Label>Description</Form.Label>
     <Form.Control required as="textarea" rows={3} />
   </Form.Group>
