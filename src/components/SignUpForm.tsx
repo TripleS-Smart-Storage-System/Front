@@ -1,4 +1,6 @@
+import axios from 'axios';
 import React from 'react';
+import config from '../config'
 import { Button, Form } from 'react-bootstrap';
 
 interface LooseObject {
@@ -16,6 +18,13 @@ class Input implements LooseObject  {
 
 class Error implements LooseObject  {
   confirm_password: string = "";
+}
+
+class NewUserData {
+  name: string = "";
+  surname: string = "";
+  email: string = "";
+  password: string = "";
 }
 
 class SignUpForm extends React.Component<{}, { input: LooseObject, errors: LooseObject }> {
@@ -49,8 +58,8 @@ class SignUpForm extends React.Component<{}, { input: LooseObject, errors: Loose
     event.preventDefault();
   
     if(this.validate()){
-        // send post request to the server
-        
+        const data: NewUserData = this.state.input as Input
+        const token = axios.post(config.serverUrl + '/signup', data).then(response => console.log(response))
         let input = new Input();
         this.setState({input:input});
     }
