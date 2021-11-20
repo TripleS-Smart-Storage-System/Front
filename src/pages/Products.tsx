@@ -1,10 +1,10 @@
 import '../App.css';
-import ProductsForm from '../components/ProductsForm'
+import NewPageButton from '../components/NewPageButton';
 
 const Products = () => (
     <div className='products'>
       <h1>Products</h1>
-      <ProductsForm />
+      <NewPageButton link="/products/new" text="Add product" />
     </div>
 );
 
