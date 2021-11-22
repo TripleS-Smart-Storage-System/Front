@@ -1,79 +1,97 @@
-import React from 'react';
-import config from '../config'
-import { Button, Form } from 'react-bootstrap';
+import React from "react";
+import config from "../config";
+import { Button, Form } from "react-bootstrap";
+import { setUserSession } from "../Utils/Common";
 
-const axios = require('axios');
-const url = require('url');
+const axios = require("axios");
+const url = require("url");
 
 interface LooseObject {
-  [key: string]: any
+  [key: string]: any;
 }
 
-class Input implements LooseObject  {
+class Input implements LooseObject {
   email: string = "";
   password: string = "";
 }
-
 
 class NewUserData {
   email: string = "";
   password: string = "";
 }
 
-class SignInForm extends React.Component<{}, { input: LooseObject, errors: LooseObject }> {
+class SignInForm extends React.Component<
+  {},
+  { input: LooseObject; errors: LooseObject }
+> {
   constructor(props: any) {
     super(props);
     this.state = {
       input: new Input(),
-      errors: new Error()
+      errors: new Error(),
     };
-     
+
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-     
-  handleChange(event: { target: { name: string | number; value: any; type: string; checked?: boolean }; }) {
+
+  handleChange(event: {
+    target: {
+      name: string | number;
+      value: any;
+      type: string;
+      checked?: boolean;
+    };
+  }) {
     let input = this.state.input;
-    if (event.target.type == 'checkbox') 
-    {
+    if (event.target.type == "checkbox") {
       input[event.target.name] = event.target.checked;
     } else {
       input[event.target.name] = event.target.value;
     }
-  
+
     this.setState({
       input: input,
-      errors: new Error()
+      errors: new Error(),
     });
   }
-     
-  async handleSubmit(event: { preventDefault: () => void; }) {
+
+  async handleSubmit(event: { preventDefault: () => void }) {
     event.preventDefault();
-  
-    if(this.validate()){
-        const d: NewUserData = this.state.input as Input
-        let xx = { email: d.email, password: d.password };
-        //const params = new url.URLSearchParams(xx);
-        let res = await axios.get(config.serverUrl + '/signin/get');
-        let data = res.data;
-        console.log(data);
-        let input = new Input();
-        this.setState({input:input});
+
+    if (this.validate()) {
+      const d: NewUserData = this.state.input as Input;
+      let xx = { email: d.email, password: d.password };
+      axios
+        .post("https://triples-api.azurewebsites.net/api/Account/login", {
+          email: xx.email,
+          password: xx.password,
+        })
+        .then((response: { data: { token: string; user: any } }) => {
+          setUserSession(response.data.token, response.data.user);
+        })
+        .catch(
+          (error: { response: { status: number; data: { message: any } } }) => {
+            console.log("Something went wrong. Please try again later.");
+          }
+        );
+      let input = new Input();
+      this.setState({ input: input });
     }
   }
-  
-  validate(){
-      let input = this.state.input;
-      let errors = new Error();
-      let isValid = true;
-  
-      this.setState({
-        errors: errors
-      });
-  
-      return isValid;
+
+  validate() {
+    let input = this.state.input;
+    let errors = new Error();
+    let isValid = true;
+
+    this.setState({
+      errors: errors,
+    });
+
+    return isValid;
   }
-     
+
   render() {
     return (
       <Form onSubmit={this.handleSubmit}>
@@ -86,7 +104,8 @@ class SignInForm extends React.Component<{}, { input: LooseObject, errors: Loose
             onChange={this.handleChange}
             required
             type="email"
-            placeholder="Enter email" />
+            placeholder="Enter email"
+          />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
@@ -100,13 +119,13 @@ class SignInForm extends React.Component<{}, { input: LooseObject, errors: Loose
             placeholder="Enter password"
           />
         </Form.Group>
-        
+
         <Button variant="primary" type="submit">
           Submit
-        </Button>      
+        </Button>
       </Form>
     );
   }
 }
-  
+
 export default SignInForm;
