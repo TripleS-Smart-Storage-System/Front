@@ -36,12 +36,11 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
     this.handleSelectedChange = this.handleSelectedChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getUnits = this.getUnits.bind(this);
+  }
 
-    this.getUnits().then(
-      units => {
-        this.setState({input: this.state.input, units: units});
-      }
-    );
+  async componentDidMount() {
+    const units = await this.getUnits();
+    this.setState({units: units});
   }
 
   async getUnits() {
@@ -55,8 +54,7 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
     input[event.target.name] = event.target.value;
 
     this.setState({
-      input: input,
-      error: this.state.error
+      input: input
     });
   }
 
@@ -66,8 +64,7 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
     console.log(input.unitId)
 
     this.setState({
-      input: input,
-      error: this.state.error
+      input: input
     });
   }
      
