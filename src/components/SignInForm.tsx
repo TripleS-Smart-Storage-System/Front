@@ -8,26 +8,20 @@ interface LooseObject {
 }
 
 class Input implements LooseObject  {
-  name: string = "";
-  surname: string = "";
   email: string = "";
   password: string = "";
-  confirm_password: string = "";
-  agreement: boolean = false;
 }
 
 class Error implements LooseObject  {
-  confirm_password: string = "";
+  check: string = "";
 }
 
 class NewUserData {
-  name: string = "";
-  surname: string = "";
   email: string = "";
   password: string = "";
 }
 
-class SignUpForm extends React.Component<{}, { input: LooseObject, errors: LooseObject }> {
+class SignInForm extends React.Component<{}, { input: LooseObject, errors: LooseObject }> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -59,7 +53,10 @@ class SignUpForm extends React.Component<{}, { input: LooseObject, errors: Loose
   
     if(this.validate()){
         const data: NewUserData = this.state.input as Input
-        axios.post(config.serverUrl + '/Account/register', data).then(response => console.log(response))
+        axios.post(config.serverUrl + '/Account/login', data).then(response => console.log(response)).catch((error) => {
+            alert('error')
+         })
+        
         let input = new Input();
         this.setState({input:input});
     }
@@ -69,14 +66,6 @@ class SignUpForm extends React.Component<{}, { input: LooseObject, errors: Loose
       let input = this.state.input;
       let errors = new Error();
       let isValid = true;
-  
-      if (typeof input["password"] !== "undefined" && typeof input["confirm_password"] !== "undefined") {
-          
-        if (input["password"] != input["confirm_password"]) {
-          isValid = false;
-          errors["confirm_password"] = "Passwords don't match.";
-        }
-      } 
   
       this.setState({
         errors: errors
@@ -88,30 +77,6 @@ class SignUpForm extends React.Component<{}, { input: LooseObject, errors: Loose
   render() {
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Form.Group className="mb-3" controlId="formBasicName">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            id="name"
-            name="name"
-            value={this.state.input.name}
-            onChange={this.handleChange}
-            required
-            type="text"
-            placeholder="Enter name"
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicSurname">
-          <Form.Label>Surnme</Form.Label>
-          <Form.Control
-            id="surname"
-            name="surname"
-            value={this.state.input.surname}
-            onChange={this.handleChange}
-            required
-            type="text"
-            placeholder="Enter surname"
-          />
-        </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
@@ -122,9 +87,6 @@ class SignUpForm extends React.Component<{}, { input: LooseObject, errors: Loose
             required
             type="email"
             placeholder="Enter email" />
-          <Form.Text className="text-muted">
-            We'll never share your email with anyone else.
-          </Form.Text>
         </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
@@ -138,28 +100,6 @@ class SignUpForm extends React.Component<{}, { input: LooseObject, errors: Loose
             placeholder="Enter password"
           />
         </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
-          <Form.Label>Confirm password</Form.Label>
-          <Form.Control
-            id="confirm_password"
-            name="confirm_password"
-            value={this.state.input.confirm_password}
-            onChange={this.handleChange}
-            required
-            type="password"
-            placeholder="Enter password again"
-          />
-          <div className="text-danger">{this.state.errors.confirm_password}</div>
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicCheckbox">
-          <Form.Check
-            checked={this.state.input.agreement}
-            onChange={this.handleChange}
-            required
-            name="agreement"
-            type="checkbox"
-            label="I agree with terms and conditions" />
-        </Form.Group>
         <Button variant="primary" type="submit">
           Submit
         </Button>      
@@ -168,4 +108,4 @@ class SignUpForm extends React.Component<{}, { input: LooseObject, errors: Loose
   }
 }
   
-export default SignUpForm;
+export default SignInForm;
