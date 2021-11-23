@@ -22,13 +22,13 @@ interface Unit {
 
 type NewProductData = Input;
 
-class NewProducForm extends React.Component<{}, { input: LooseObject, units: Unit[], success: boolean, error: string}> {
+class NewProducForm extends React.Component<{}, { input: LooseObject, units: Unit[], newProductId: string, error: string}> {
   constructor(props: any) {
     super(props);
     this.state = {
       input: new Input(),
       units: new Array<Unit>(),
-      success: false,
+      newProductId: '',
       error: ''
     };
     
@@ -55,7 +55,8 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
     input[event.target.name] = event.target.value;
 
     this.setState({
-      input: input
+      input: input,
+      error: this.state.error
     });
   }
 
@@ -65,26 +66,30 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
     console.log(input.unitId)
 
     this.setState({
-      input: input
+      input: input,
+      error: this.state.error
     });
   }
      
-  handleSubmit(event: { preventDefault: () => void; }) {
+  async handleSubmit(event: { preventDefault: () => void; }) {
     event.preventDefault();
 
     const data: NewProductData = this.state.input as Input
 
-    let success = false;
+    let newProductId = '';
     let error = '';
-    axios.post(config.serverUrl + '/Product', data).then(
+    await axios.post(config.serverUrl + '/Product', data).then(
       response => {
-        console.log(response.data);
-        success = true;
+        newProductId = response.data;
+        if (response.status < 200 || response.status >= 300) {
+          error = response.statusText
+        }
       }
     ).catch(function (err) {
-      error = err.mesage;
+      error = err.message;
     });
-    this.setState({input: new Input(), success: success, error: error})
+
+    this.setState({input: new Input(), error: error, newProductId: newProductId})
   }
      
   render() {
@@ -92,15 +97,16 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
       <option value={unit.id} id={unit.id} key={unit.name}>{unit.name}</option>
     );
 
-    const success = this.state.success;
+    const newProductId = this.state.newProductId;
     const error = this.state.error;
     
     return (
       <Form onSubmit={this.handleSubmit} action="/products">
-        {success && (
+        <h1>{newProductId}</h1>
+        {newProductId && error !== '' && (
           <Navigate to="/products" replace={true} />
         )}
-        {error.length != 0 && (
+        {error && (
           <div className="text-danger">
             <h6>{error}</h6>
           </div>
@@ -151,7 +157,6 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
             name="description"
             value={this.state.input.description}
             onChange={this.handleChange}
-            required
             as="textarea"
             rows={3}
             placeholder="Enter description" />
