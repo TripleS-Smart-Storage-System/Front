@@ -13,7 +13,7 @@ class Input implements LooseObject {
   unitId: string = "";
   name: string = "";
   description: string = "";
-  shelfLife: number = 1;
+  shelfLife: string = "1";
 }
 
 type NewProductData = Input;
@@ -35,8 +35,15 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
   }
 
   async componentDidMount() {
-    const units = await this.getUnits();
-    this.setState({units: units});
+    const units: Unit[] = await this.getUnits();
+    const input = this.state.input;
+    let error = this.state.error;
+    if (units.length == 0) {
+      error = "We don't have any units."
+    } else {
+      input.unitId = units[0].id;
+    }
+    this.setState({units: units, input: input, error: error});
   }
 
   async getUnits() {
@@ -57,7 +64,6 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
   handleSelectedChange(event: { target: any; }) {
     let input = this.state.input;
     input.unitId = event.target.value;
-    console.log(input.unitId)
 
     this.setState({
       input: input
@@ -95,13 +101,12 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
     
     return (
       <Form onSubmit={this.handleSubmit} action="/products">
-        {newProductId && error !== '' && (
-          <Navigate to="/products" replace={true} />
-        )}
         {error && (
           <div className="text-danger">
             <h6>{error}</h6>
           </div>
+        ) || newProductId && (
+          <Navigate to="/products" replace={true} />
         )}
         <Form.Group className="mb-3" controlId="formBasicName">
           <Form.Label>Name</Form.Label>
@@ -150,6 +155,7 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
             value={this.state.input.description}
             onChange={this.handleChange}
             as="textarea"
+            required
             rows={3}
             placeholder="Enter description" />
         </Form.Group>
