@@ -3,6 +3,7 @@ import React from 'react';
 import config from '../config'
 import { Button, Form } from 'react-bootstrap';
 import { Navigate } from 'react-router-dom';
+import { setUserSession } from '../Utils/Common';
 
 interface LooseObject {
   [key: string]: any
@@ -55,6 +56,9 @@ class SignInForm extends React.Component<{}, { input: LooseObject, success: bool
     await axios.post(config.serverUrl + '/Account/login', data)
     .then(response => {
       success = true;
+      const token = response.data.token
+      const user = response.data.id
+      setUserSession(token, user)
       if (response.status < 200 || response.status >= 300) {
         errors.message = response.statusText;
         errors.status = response.status;

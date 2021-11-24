@@ -1,5 +1,5 @@
 import './App.css';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Header from './components/Header'
 import Home from './pages/Home'
 import Products from './pages/Products'
@@ -8,6 +8,7 @@ import NewProduct from './pages/NewProduct'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import EditProduct from './pages/EditProduct';
+import { removeUserSession } from './Utils/Common';
 
 const App = () => (
   <div className="app">
@@ -50,6 +51,19 @@ const BadRequest = () => (
   </div>
 );
 
+function Logout() {
+  return (
+    <div className="page-not-found">
+      <div className="text-center py-5">
+        <h1 className="display-1">Bye</h1>
+        <h2>Log out</h2>
+      </div>
+      {removeUserSession()}
+      <Navigate to="/" replace={true} />
+    </div>
+  );
+}
+
 const Main = () => (
   <div className="main">
     <Routes>
@@ -60,6 +74,7 @@ const Main = () => (
       <Route path='/products/:id' element={<Product />}/>
       <Route path='/signup' element={<SignUp />} />
       <Route path='/signin' element={<SignIn />} />
+      <Route path='/logout' element={<Logout />} />
       <Route path='/403' element={<AccessDenied />} />
       <Route path='/400' element={<BadRequest />} />
       <Route path='*' element={<PageNotFound />} />
