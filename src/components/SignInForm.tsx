@@ -2,6 +2,7 @@ import axios from 'axios';
 import React from 'react';
 import config from '../config'
 import { Button, Form } from 'react-bootstrap';
+import { Navigate } from 'react-router-dom';
 
 interface LooseObject {
   [key: string]: any
@@ -12,8 +13,9 @@ class Input implements LooseObject  {
   password: string = "";
 }
 
-class Error implements LooseObject  {
-  check: string = "";
+class Error {
+  message: string = "";
+  status: number = 0;
 }
 
 class NewUserData {
@@ -21,11 +23,12 @@ class NewUserData {
   password: string = "";
 }
 
-class SignInForm extends React.Component<{}, { input: LooseObject, errors: LooseObject }> {
+class SignInForm extends React.Component<{}, { input: LooseObject, success: boolean, errors: LooseObject }> {
   constructor(props: any) {
     super(props);
     this.state = {
       input: new Input(),
+      success: false,
       errors: new Error()
     };
      
@@ -35,12 +38,7 @@ class SignInForm extends React.Component<{}, { input: LooseObject, errors: Loose
      
   handleChange(event: { target: { name: string | number; value: any; type: string; checked?: boolean }; }) {
     let input = this.state.input;
-    if (event.target.type == 'checkbox') 
-    {
-      input[event.target.name] = event.target.checked;
-    } else {
-      input[event.target.name] = event.target.value;
-    }
+    input[event.target.name] = event.target.value;
   
     this.setState({
       input: input,
@@ -48,35 +46,42 @@ class SignInForm extends React.Component<{}, { input: LooseObject, errors: Loose
     });
   }
      
-  handleSubmit(event: { preventDefault: () => void; }) {
+  async handleSubmit(event: { preventDefault: () => void; }) {
     event.preventDefault();
-  
-    if(this.validate()){
-        const data: NewUserData = this.state.input as Input
-        axios.post(config.serverUrl + '/Account/login', data).then(response => console.log(response)).catch((error) => {
-            alert('error')
-         })
-        
-        let input = new Input();
-        this.setState({input:input});
-    }
-  }
-  
-  validate(){
-      let input = this.state.input;
-      let errors = new Error();
-      let isValid = true;
-  
-      this.setState({
-        errors: errors
-      });
-  
-      return isValid;
+
+    const data: NewUserData = this.state.input as Input
+    const errors = new Error();
+    let success = false;
+    await axios.post(config.serverUrl + '/Account/login', data)
+    .then(response => {
+      success = true;
+      if (response.status < 200 || response.status >= 300) {
+        errors.message = response.statusText;
+        errors.status = response.status;
+        success = false;
+      }
+    })
+    .catch((err) => {
+      errors.message = err.message;
+      errors.status = err.status;
+    })
+    
+    const input = new Input();
+    this.setState({input: input, success: success, errors: errors});
   }
      
   render() {
+    const error = this.state.errors;
+    const success = this.state.success;
     return (
       <Form onSubmit={this.handleSubmit}>
+        {error.message && (
+          <div className="text-danger">
+            <h6>{error.message}</h6>
+          </div>
+        ) || success && (
+          <Navigate to="/" replace={true} />
+        )}
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
