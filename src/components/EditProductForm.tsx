@@ -3,7 +3,9 @@ import React from 'react';
 import config from '../config'
 import { Button, Form } from 'react-bootstrap';
 import { Navigate } from "react-router-dom";
-import { Unit } from '../types';
+import { Product, Unit } from '../types';
+import { truncateSync } from 'fs';
+import { couldStartTrivia } from 'typescript';
 
 interface LooseObject {
   [key: string]: any
@@ -16,15 +18,18 @@ class Input implements LooseObject {
   shelfLife: string = "1";
 }
 
-type NewProductData = Input;
+class EditProductData extends Input {
+  id: string = "";
+}
 
-class NewProducForm extends React.Component<{}, { input: LooseObject, units: Unit[], newProductId: string, error: string}> {
-  constructor(props: any) {
+class EditProducForm extends React.Component<{productId: string}, { productId: string, input: LooseObject, units: Unit[], success: boolean, error: string}> {
+  constructor(props: {productId: string}) {
     super(props);
     this.state = {
+      productId: props.productId,
       input: new Input(),
       units: new Array<Unit>(),
-      newProductId: '',
+      success: false,
       error: ''
     };
     
@@ -32,6 +37,7 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
     this.handleSelectedChange = this.handleSelectedChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getUnits = this.getUnits.bind(this);
+    this.getProduct = this.getProduct.bind(this);
   }
 
   async componentDidMount() {
@@ -43,6 +49,17 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
     } else {
       input.unitId = units[0].id;
     }
+
+    const productId = this.state.productId;
+    const product: Product = await this.getProduct(productId);
+    if (product.id != productId) {
+      error = "Something went wrong"
+    } else {
+      input.unitId = product.unit.id;
+      input.name = product.name;
+      input.description = product.description;
+      input.shelfLife = product.shelfLife.split('.')[0];
+    }
     this.setState({units: units, input: input, error: error});
   }
 
@@ -51,10 +68,16 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
     const units: Unit[] = response.data;
     return units;
   }
+
+  async getProduct(id: String) {
+    const response = await axios.get<Product>(config.serverUrl + '/Product?id=' + id);
+    const product: Product = response.data;
+    return product;
+  }
      
   handleChange(event: { target: { name: string | number; value: any }; }) {
     let input = this.state.input;
-    input[event.target.name] = event.target.value;
+    input[event.target.name] = event.target.value.toString();
 
     this.setState({
       input: input
@@ -73,30 +96,36 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
   async handleSubmit(event: { preventDefault: () => void; }) {
     event.preventDefault();
 
-    const data: NewProductData = this.state.input as Input
+    const data: EditProductData = this.state.input as EditProductData;
+    console.log(data.shelfLife)
+    data.id = (this.props.productId).toString();
 
-    let newProductId = '';
+    let success = false;
     let error = '';
-    await axios.post(config.serverUrl + '/Product', data).then(
+    await axios.put(config.serverUrl + '/Product', data).then(
       response => {
-        newProductId = response.data;
+        success = true;
         if (response.status < 200 || response.status >= 300) {
-          error = response.statusText
+          error = response.statusText;
+          success = false;
         }
       }
     ).catch(function (err) {
       error = err.message;
     });
 
-    this.setState({input: new Input(), error: error, newProductId: newProductId})
+    this.setState({error: error, success: success})
   }
      
   render() {
-    let unitOptions = this.state.units.map((unit) =>
-      <option value={unit.id} id={unit.id} key={unit.name}>{unit.name}</option>
+    const unitId = this.state.input.unitId;
+    const units = this.state.units;
+    const index = units.findIndex(u => u.id == unitId);
+    const unitOptions: JSX.Element[] = units.map((unit) =>
+      <option selected={unitId == unit.id} value={unit.id} id={unit.id} key={unit.name}>{unit.name}</option>
     );
 
-    const newProductId = this.state.newProductId;
+    const success = this.state.success;
     const error = this.state.error;
     
     return (
@@ -105,7 +134,7 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
           <div className="text-danger">
             <h6>{error}</h6>
           </div>
-        ) || newProductId && (
+        ) || success && (
           <Navigate to="/products" replace={true} />
         )}
         <Form.Group className="mb-3" controlId="formBasicName">
@@ -160,11 +189,11 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
             placeholder="Enter description" />
         </Form.Group>
         <Button variant="primary" type="submit">
-          Submit
+          Edit
         </Button>      
       </Form>
     );
   }
 }
   
-export default NewProducForm;
+export default EditProducForm;

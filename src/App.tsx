@@ -7,13 +7,19 @@ import Product from './pages/Product'
 import NewProduct from './pages/NewProduct'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
+import EditProduct from './pages/EditProduct';
 
 const App = () => (
   <div className="app">
     <Header />
-    <div className="main">
-      <Main />
-    </div>
+    <Main />
+    <Footer />
+  </div>
+);
+
+const Footer = () => (
+  <div className="footer">
+    <div className="text-info">Copyright © 2021 TripleS - Smart Storage System</div>
   </div>
 );
 
@@ -45,10 +51,12 @@ const BadRequest = () => (
 );
 
 const Main = () => (
+  <div className="main">
     <Routes>
       <Route path='/' element={<Home />} />
       <Route path='/products' element={<Products />}/>
       <Route path='/products/new' element={<NewProduct />}/>
+      <Route path='/products/edit/:id' element={<EditProduct />}/>
       <Route path='/products/:id' element={<Product />}/>
       <Route path='/signup' element={<SignUp />} />
       <Route path='/signin' element={<SignIn />} />
@@ -56,6 +64,7 @@ const Main = () => (
       <Route path='/400' element={<BadRequest />} />
       <Route path='*' element={<PageNotFound />} />
     </Routes>
+  </div>
 );
 
 export default App;
