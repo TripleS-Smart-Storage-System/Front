@@ -2,17 +2,9 @@ import axios from 'axios';
 import React from 'react';
 import config from '../config'
 import { Button, Card, Col, Row } from 'react-bootstrap';
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { PencilFill, TrashFill} from 'react-bootstrap-icons';
-import { Unit } from '../types';
-
-export interface Product {
-    id: string;
-    name: string;
-    description: string;
-    shelfLife: string;
-    unit: Unit;
-}
+import { Product, Unit } from '../types';
 
 class ProductList extends React.Component<{}, {products: Product[]}> {
     constructor(props: any) {
@@ -81,7 +73,9 @@ class ProductList extends React.Component<{}, {products: Product[]}> {
                         </Col>
                         <Col xs={2} className="justify-content-between">
                             <Row className="mb-4">
-                                <PencilFill />
+                                <Link to={`edit/${p.id}`}>
+                                    <PencilFill />
+                                </Link>
                             </Row>
                             <Row className="mt-4">
                                 <TrashFill onClick={e => {this.onClickRemove(p.id)}} />

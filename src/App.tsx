@@ -6,6 +6,7 @@ import Products from './pages/Products'
 import Product from './pages/Product'
 import NewProduct from './pages/NewProduct'
 import SignUp from './pages/SignUp'
+import EditProduct from './pages/EditProduct';
 
 const App = () => (
   <div className="app">
@@ -54,6 +55,7 @@ const Main = () => (
       <Route path='/' element={<Home />} />
       <Route path='/products' element={<Products />}/>
       <Route path='/products/new' element={<NewProduct />}/>
+      <Route path='/products/edit/:id' element={<EditProduct />}/>
       <Route path='/products/:id' element={<Product />}/>
       <Route path='/signup' element={<SignUp />} />
       <Route path='/403' element={<AccessDenied />} />
