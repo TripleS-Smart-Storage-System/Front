@@ -2,6 +2,7 @@ import axios from 'axios';
 import React from 'react';
 import config from '../config'
 import { Button, Form } from 'react-bootstrap';
+import { Navigate } from 'react-router';
 
 interface LooseObject {
   [key: string]: any
@@ -16,8 +17,10 @@ class Input implements LooseObject  {
   agreement: boolean = false;
 }
 
-class Error implements LooseObject  {
+class Error implements LooseObject {
   confirm_password: string = "";
+  message: string = "";
+  status: number = 0;
 }
 
 class NewUserData {
@@ -27,11 +30,12 @@ class NewUserData {
   password: string = "";
 }
 
-class SignUpForm extends React.Component<{}, { input: LooseObject, errors: LooseObject }> {
+class SignUpForm extends React.Component<{}, { input: LooseObject, success: boolean, errors: LooseObject }> {
   constructor(props: any) {
     super(props);
     this.state = {
       input: new Input(),
+      success: false,
       errors: new Error()
     };
      
@@ -54,14 +58,29 @@ class SignUpForm extends React.Component<{}, { input: LooseObject, errors: Loose
     });
   }
      
-  handleSubmit(event: { preventDefault: () => void; }) {
+  async handleSubmit(event: { preventDefault: () => void; }) {
     event.preventDefault();
   
     if(this.validate()){
-        const data: NewUserData = this.state.input as Input
-        axios.post(config.serverUrl + '/signup', data).then(response => console.log(response))
-        let input = new Input();
-        this.setState({input:input});
+      const data: NewUserData = this.state.input as Input
+      const errors = new Error();
+      let success = false;
+      await axios.post(config.serverUrl + '/Account/register', data)
+      .then(response => {
+        success = true;
+        if (response.status < 200 || response.status >= 300) {
+          errors.message = response.statusText;
+          errors.status = response.status;
+          success = false;
+        }
+      })
+      .catch((err) => {
+        errors.message = err.message;
+        errors.status = err.status;
+      })
+      
+      const input = new Input();
+      this.setState({input: input, success: success, errors: errors});
     }
   }
   
@@ -86,8 +105,17 @@ class SignUpForm extends React.Component<{}, { input: LooseObject, errors: Loose
   }
      
   render() {
+    const error = this.state.errors;
+    const success = this.state.success;
     return (
       <Form onSubmit={this.handleSubmit}>
+        {error.message && (
+          <div className="text-danger">
+            <h6>{error.message}</h6>
+          </div>
+        ) || success && (
+          <Navigate to="/signin" replace={true} />
+        )}
         <Form.Group className="mb-3" controlId="formBasicName">
           <Form.Label>Name</Form.Label>
           <Form.Control

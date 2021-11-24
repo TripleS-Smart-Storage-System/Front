@@ -1,12 +1,16 @@
 import './App.css';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Header from './components/Header'
 import Home from './pages/Home'
 import Products from './pages/Products'
 import Product from './pages/Product'
 import NewProduct from './pages/NewProduct'
 import SignUp from './pages/SignUp'
+import SignIn from './pages/SignIn'
 import EditProduct from './pages/EditProduct';
+import { removeUserSession } from './Utils/Common';
+import Users from './pages/Users';
+import EditUser from './pages/EditUser';
 
 const App = () => (
   <div className="app">
@@ -49,15 +53,32 @@ const BadRequest = () => (
   </div>
 );
 
+function Logout() {
+  return (
+    <div className="page-not-found">
+      <div className="text-center py-5">
+        <h1 className="display-1">Bye</h1>
+        <h2>Log out</h2>
+      </div>
+      {removeUserSession()}
+      <Navigate to="/" replace={true} />
+    </div>
+  );
+}
+
 const Main = () => (
   <div className="main">
     <Routes>
       <Route path='/' element={<Home />} />
+      <Route path='/users' element={<Users />}/>
+      <Route path='/users/edit/:id' element={<EditUser />}/>
       <Route path='/products' element={<Products />}/>
       <Route path='/products/new' element={<NewProduct />}/>
       <Route path='/products/edit/:id' element={<EditProduct />}/>
       <Route path='/products/:id' element={<Product />}/>
       <Route path='/signup' element={<SignUp />} />
+      <Route path='/signin' element={<SignIn />} />
+      <Route path='/logout' element={<Logout />} />
       <Route path='/403' element={<AccessDenied />} />
       <Route path='/400' element={<BadRequest />} />
       <Route path='*' element={<PageNotFound />} />
