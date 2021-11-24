@@ -3,6 +3,7 @@ import React from 'react';
 import config from '../config'
 import { Button, Form } from 'react-bootstrap';
 import { Navigate } from "react-router-dom";
+import { Unit } from '../types';
 
 interface LooseObject {
   [key: string]: any
@@ -13,11 +14,6 @@ class Input implements LooseObject {
   name: string = "";
   description: string = "";
   shelfLife: number = 1;
-}
-
-interface Unit {
-  id: string;
-  name: string
 }
 
 type NewProductData = Input;
@@ -99,7 +95,6 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
     
     return (
       <Form onSubmit={this.handleSubmit} action="/products">
-        <h1>{newProductId}</h1>
         {newProductId && error !== '' && (
           <Navigate to="/products" replace={true} />
         )}
