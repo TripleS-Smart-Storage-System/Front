@@ -97,7 +97,6 @@ class EditProducForm extends React.Component<{productId: string}, { productId: s
     event.preventDefault();
 
     const data: EditProductData = this.state.input as EditProductData;
-    console.log(data.shelfLife)
     data.id = (this.props.productId).toString();
 
     let success = false;
