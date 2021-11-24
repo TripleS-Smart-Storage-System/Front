@@ -23,7 +23,10 @@ function Header() {
             <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
                         {isLoggedIn && (
-                            <NavLink to="/products">Products</NavLink>
+                            <div>
+                                <NavLink to="/users">users</NavLink>
+                                <NavLink to="/products">Products</NavLink>
+                            </div>
                         )}
                     </Nav>
                 <Nav>

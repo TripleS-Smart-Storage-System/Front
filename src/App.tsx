@@ -9,6 +9,8 @@ import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import EditProduct from './pages/EditProduct';
 import { removeUserSession } from './Utils/Common';
+import Users from './pages/Users';
+import EditUser from './pages/EditUser';
 
 const App = () => (
   <div className="app">
@@ -68,6 +70,8 @@ const Main = () => (
   <div className="main">
     <Routes>
       <Route path='/' element={<Home />} />
+      <Route path='/users' element={<Users />}/>
+      <Route path='/users/edit/:id' element={<EditUser />}/>
       <Route path='/products' element={<Products />}/>
       <Route path='/products/new' element={<NewProduct />}/>
       <Route path='/products/edit/:id' element={<EditProduct />}/>
