@@ -3,6 +3,7 @@ import React from 'react';
 import config from '../config'
 import { Button, Card, Col, Row } from 'react-bootstrap';
 import { Navigate } from "react-router-dom";
+import { PencilFill, TrashFill} from 'react-bootstrap-icons';
 import { Unit } from '../types';
 
 export interface Product {
@@ -19,6 +20,7 @@ class ProductList extends React.Component<{}, {products: Product[]}> {
         this.state = {
             products: new Array<Product>()
         }
+        this.onClickRemove = this.onClickRemove.bind(this);
         this.getProducts = this.getProducts.bind(this);
     }
   
@@ -33,33 +35,57 @@ class ProductList extends React.Component<{}, {products: Product[]}> {
         return products;
     }
 
+    async onClickRemove(productId: string) {
+        let error = '';
+        await axios.delete(config.serverUrl + '/Product', {params: {'id': productId}}).then(
+            response => {
+                if (response.status < 200 || response.status >= 300) {
+                    error = response.statusText;
+                }
+            }
+        );
+        await this.componentDidMount();
+    }
+
     render() {
       const products = this.state.products; 
 
       const productList = products.map(p => (
         <Col>
-            <Card className="product-area">
+            <Card id={p.id} className="product-area">
             <Card.Img variant="top" src="https://s3.amazonaws.com/thissnackdoesnotexist.com/tofu-597228_1920.jpg" />
             <Card.Body>
                 <Card.Title>{p.name}</Card.Title>
                 <Card.Text>
                     <Row>
-                        <Col>
-                            <div className="p-2 m-1 border rounded">
-                                Description: {p.description}
-                            </div>
+                        <Col xs={10}>
+                            <Row>
+                                <Col>
+                                    <div className="p-2 m-1 border rounded">
+                                        Description: {p.description}
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row xs="auto" className="justify-content-between">
+                                <Col>
+                                    <div className="p-2 m-1 border rounded">
+                                        Unit: {p.unit.name}
+                                    </div>
+                                </Col>
+                                <Col>
+                                    <div className="p-2 m-1 border rounded">
+                                        Shelf life: {p.shelfLife}
+                                    </div>
+                                </Col>
+                            </Row>
                         </Col>
-                    </Row>
-                    <Row xs="auto" className="justify-content-between">
-                        <Col>
-                            <div className="p-2 m-1 border rounded">
-                                Unit: {p.unit.name}
-                            </div>
-                        </Col>
-                        <Col>
-                            <div className="p-2 m-1 border rounded">
-                                Shelf life: {p.shelfLife}
-                            </div>
+                        <Col xs={2} className="justify-content-between">
+                            <Row className="mb-4">
+                                <PencilFill />
+                            </Row>
+                            <Row className="mt-4">
+                                <TrashFill onClick={e => {this.onClickRemove(p.id)}} />
+                            </Row>
                         </Col>
                     </Row>
                 </Card.Text>
