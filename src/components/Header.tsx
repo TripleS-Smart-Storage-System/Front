@@ -24,7 +24,7 @@ function Header() {
                     <Nav className="me-auto">
                         {isLoggedIn && (
                             <div>
-                                <NavLink to="/users">users</NavLink>
+                                <NavLink to="/users">Users</NavLink>
                                 <NavLink to="/products">Products</NavLink>
                             </div>
                         )}

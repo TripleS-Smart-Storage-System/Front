@@ -59,9 +59,6 @@ class UserList extends React.Component<{}, {users: User[]}> {
                                         <PencilFill />
                                     </Link>
                                 </Col>
-                                <Col>
-                                    <TrashFill color="red" onClick={e => {this.onClickRemove(p.id)}} />
-                                </Col>
                             </Row>
                         </Col>
                     </Row>
