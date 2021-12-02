@@ -4,8 +4,7 @@ import config from '../config'
 import { Button, Form } from 'react-bootstrap';
 import { Navigate } from "react-router-dom";
 import { Product, Unit } from '../types';
-import { truncateSync } from 'fs';
-import { couldStartTrivia } from 'typescript';
+import { getProduct, getUnits } from '../Utils/Api'
 
 interface LooseObject {
   [key: string]: any
@@ -36,12 +35,10 @@ class EditProducForm extends React.Component<{productId: string}, { productId: s
     this.handleChange = this.handleChange.bind(this);
     this.handleSelectedChange = this.handleSelectedChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.getUnits = this.getUnits.bind(this);
-    this.getProduct = this.getProduct.bind(this);
   }
 
   async componentDidMount() {
-    const units: Unit[] = await this.getUnits();
+    const units: Unit[] = await getUnits();
     const input = this.state.input;
     let error = this.state.error;
     if (units.length == 0) {
@@ -51,7 +48,7 @@ class EditProducForm extends React.Component<{productId: string}, { productId: s
     }
 
     const productId = this.state.productId;
-    const product: Product = await this.getProduct(productId);
+    const product: Product = await getProduct(productId);
     if (product.id != productId) {
       error = "Something went wrong"
     } else {
@@ -61,18 +58,6 @@ class EditProducForm extends React.Component<{productId: string}, { productId: s
       input.shelfLife = product.shelfLife.split('.')[0];
     }
     this.setState({units: units, input: input, error: error});
-  }
-
-  async getUnits() {
-    const response = await axios.get<Unit[]>(config.serverUrl + '/Unit/units');
-    const units: Unit[] = response.data;
-    return units;
-  }
-
-  async getProduct(id: String) {
-    const response = await axios.get<Product>(config.serverUrl + '/Product?id=' + id);
-    const product: Product = response.data;
-    return product;
   }
      
   handleChange(event: { target: { name: string | number; value: any }; }) {

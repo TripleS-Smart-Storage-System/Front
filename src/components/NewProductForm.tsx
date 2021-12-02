@@ -4,6 +4,7 @@ import config from '../config'
 import { Button, Form } from 'react-bootstrap';
 import { Navigate } from "react-router-dom";
 import { Unit } from '../types';
+import { getUnits } from '../Utils/Api';
 
 interface LooseObject {
   [key: string]: any
@@ -31,11 +32,10 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
     this.handleChange = this.handleChange.bind(this);
     this.handleSelectedChange = this.handleSelectedChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.getUnits = this.getUnits.bind(this);
   }
 
   async componentDidMount() {
-    const units: Unit[] = await this.getUnits();
+    const units: Unit[] = await getUnits();
     const input = this.state.input;
     let error = this.state.error;
     if (units.length == 0) {
@@ -44,12 +44,6 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
       input.unitId = units[0].id;
     }
     this.setState({units: units, input: input, error: error});
-  }
-
-  async getUnits() {
-    const response = await axios.get<Unit[]>(config.serverUrl + '/Unit/units');
-    const units: Unit[] = response.data;
-    return units;
   }
      
   handleChange(event: { target: { name: string | number; value: any }; }) {

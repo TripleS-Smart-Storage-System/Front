@@ -6,6 +6,7 @@ import { Navigate } from "react-router-dom";
 import { User, Unit } from '../types';
 import { truncateSync } from 'fs';
 import { couldStartTrivia } from 'typescript';
+import { getUser } from '../Utils/Api';
 
 interface LooseObject {
   [key: string]: any
@@ -40,13 +41,12 @@ class EditProducForm extends React.Component<{userId: string}, { userId: string,
     this.handleChange = this.handleChange.bind(this);
     this.handleSelectedChange = this.handleSelectedChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.getUser = this.getUser.bind(this);
   }
 
   async componentDidMount() {
     const input = this.state.input;
     const userId = this.state.userId;
-    const user: User = await this.getUser(userId);
+    const user: User = await getUser(userId);
     const errors = new Error()
     if (user.id != userId) {
       errors.message = "Something went wrong"
@@ -56,12 +56,6 @@ class EditProducForm extends React.Component<{userId: string}, { userId: string,
       input.nickName = user.nickName;
     }
     this.setState({input: input, errors: errors});
-  }
-
-  async getUser(id: String) {
-    const response = await axios.get<User>(config.serverUrl + '/User?id=' + id);
-    const user: User = response.data;
-    return user;
   }
      
   handleChange(event: { target: { name: string | number; value: any }; }) {

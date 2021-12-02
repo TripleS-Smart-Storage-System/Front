@@ -1,9 +1,8 @@
-import React from 'react';
-import logo from '../warehouse.png'
+import logo from '../images/warehouse.png'
 import '../App.css';
 import { NavLink } from 'react-router-dom';
 import { Container, Nav, Navbar } from 'react-bootstrap';
-import { isAuthorized, getToken } from '../Utils/Common';
+import { isAuthorized } from '../Utils/Common';
 
 function Header() {
     const isLoggedIn: boolean = isAuthorized()

@@ -1,11 +1,12 @@
 import axios from 'axios';
 import React from 'react';
 import config from '../config'
-import empty from '../empty.png'
-import { Button, Card, Col, Row } from 'react-bootstrap';
-import { Link, Navigate } from "react-router-dom";
+import empty from '../images/empty.png'
+import { Card, Col, Row } from 'react-bootstrap';
+import { Link } from "react-router-dom";
 import { PencilFill, TrashFill} from 'react-bootstrap-icons';
-import { Product, Unit } from '../types';
+import { Product } from '../types';
+import { getProducts } from '../Utils/Api';
 
 class ProductList extends React.Component<{}, {products: Product[]}> {
     constructor(props: any) {
@@ -14,18 +15,11 @@ class ProductList extends React.Component<{}, {products: Product[]}> {
             products: new Array<Product>()
         }
         this.onClickRemove = this.onClickRemove.bind(this);
-        this.getProducts = this.getProducts.bind(this);
     }
   
     async componentDidMount() {
-        const products = await this.getProducts();
+        const products = await getProducts();
         this.setState({products: products});
-    }
-  
-    async getProducts() {
-        const response = await axios.get<Product[]>(config.serverUrl + '/Product/products');
-        const products: Product[] = response.data;
-        return products;
     }
 
     async onClickRemove(productId: string) {
