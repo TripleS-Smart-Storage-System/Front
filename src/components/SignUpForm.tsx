@@ -3,6 +3,7 @@ import React from 'react';
 import config from '../config'
 import { Button, Form } from 'react-bootstrap';
 import { Navigate } from 'react-router';
+import { signUp } from '../Utils/Api';
 
 interface LooseObject {
   [key: string]: any
@@ -65,19 +66,14 @@ class SignUpForm extends React.Component<{}, { input: LooseObject, success: bool
       const data: NewUserData = this.state.input as Input
       const errors = new Error();
       let success = false;
-      await axios.post(config.serverUrl + '/Account/register', data)
-      .then(response => {
+
+      const result = await signUp(data);
+      if (result.error) {
+        errors.message = result.error;
+        errors.status = 0;
+      } else {
         success = true;
-        if (response.status < 200 || response.status >= 300) {
-          errors.message = response.statusText;
-          errors.status = response.status;
-          success = false;
-        }
-      })
-      .catch((err) => {
-        errors.message = err.message;
-        errors.status = err.status;
-      })
+      }
       
       const input = new Input();
       this.setState({input: input, success: success, errors: errors});

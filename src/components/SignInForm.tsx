@@ -4,6 +4,7 @@ import config from '../config'
 import { Button, Form } from 'react-bootstrap';
 import { Navigate } from 'react-router-dom';
 import { setUserSession } from '../Utils/Common';
+import { signIn } from '../Utils/Api';
 
 interface LooseObject {
   [key: string]: any
@@ -53,22 +54,17 @@ class SignInForm extends React.Component<{}, { input: LooseObject, success: bool
     const data: NewUserData = this.state.input as Input
     const errors = new Error();
     let success = false;
-    await axios.post(config.serverUrl + '/Account/login', data)
-    .then(response => {
+
+    const result = await signIn(data);
+    if (result.error) {
+      errors.message = result.error;
+      errors.status = 0;
+    } else {
       success = true;
-      const token = response.data.token
-      const user = response.data.id
+      const token = result.response?.data.token ?? '';
+      const user = result.response?.data.id ?? '';
       setUserSession(token, user)
-      if (response.status < 200 || response.status >= 300) {
-        errors.message = response.statusText;
-        errors.status = response.status;
-        success = false;
-      }
-    })
-    .catch((err) => {
-      errors.message = err.message;
-      errors.status = err.status;
-    })
+    }
     
     const input = new Input();
     this.setState({input: input, success: success, errors: errors});

@@ -12,6 +12,10 @@ export function getBaseUrl(): string {
     return config.serverUrl
 }
 
+export async function post<T>(url: string, data: T): Promise<AxiosResponse> {
+    return await axios.post(getBaseUrl() + url, data, {headers: getHeaders()});
+}
+
 export async function get<T>(url: string, params?: any): Promise<AxiosResponse<T>> {
     const config = {params: params, headers: getHeaders()}
     return await axios.get<any, any, T>(getBaseUrl() + url, config);
@@ -19,10 +23,6 @@ export async function get<T>(url: string, params?: any): Promise<AxiosResponse<T
 
 export async function put<T>(url: string, data: T): Promise<AxiosResponse> {
     return await axios.put(getBaseUrl() + url, data, {headers: getHeaders()});
-}
-
-export async function post<T>(url: string, data: T): Promise<AxiosResponse> {
-    return await axios.post(getBaseUrl() + url, data, {headers: getHeaders()});
 }
 
 export async function del(url: string, params?: any): Promise<AxiosResponse> {

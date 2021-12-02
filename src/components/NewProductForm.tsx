@@ -4,7 +4,7 @@ import config from '../config'
 import { Button, Form } from 'react-bootstrap';
 import { Navigate } from "react-router-dom";
 import { Unit } from '../types';
-import { getUnits } from '../Utils/Api';
+import { createNewProduct, getUnits } from '../Utils/Api';
 
 interface LooseObject {
   [key: string]: any
@@ -69,20 +69,10 @@ class NewProducForm extends React.Component<{}, { input: LooseObject, units: Uni
 
     const data: NewProductData = this.state.input as Input
 
-    let newProductId = '';
-    let error = '';
-    await axios.post(config.serverUrl + '/Product', data).then(
-      response => {
-        newProductId = response.data;
-        if (response.status < 200 || response.status >= 300) {
-          error = response.statusText
-        }
-      }
-    ).catch(function (err) {
-      error = err.message;
-    });
+    const result = await createNewProduct(data)
+    let newProductId = result.response?.data ?? '';
 
-    this.setState({input: new Input(), error: error, newProductId: newProductId})
+    this.setState({input: new Input(), error: result.error, newProductId: newProductId})
   }
      
   render() {
