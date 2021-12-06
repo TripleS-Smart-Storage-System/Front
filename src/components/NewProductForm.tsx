@@ -1,16 +1,13 @@
 import axios from 'axios';
-import React from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import config from '../config'
 import { Button, Form } from 'react-bootstrap';
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Unit } from '../types';
 import { createNewProduct, getUnits } from '../Utils/Api';
 
-interface LooseObject {
-  [key: string]: any
-}
 
-class Input implements LooseObject {
+class Input {
   unitId: string = "";
   name: string = "";
   description: string = "";
@@ -19,136 +16,103 @@ class Input implements LooseObject {
 
 type NewProductData = Input;
 
-class NewProducForm extends React.Component<{}, { input: LooseObject, units: Unit[], newProductId: string, error: string}> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      input: new Input(),
-      units: new Array<Unit>(),
-      newProductId: '',
-      error: ''
-    };
-    
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSelectedChange = this.handleSelectedChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+function NewProducForm() {
+  const navigate = useNavigate();
+  const [units, setUnits] = useState(new Array<Unit>());
+  const [input, setValues] = useState(new Input())
+  const [error, setError] = useState('')
+  const [unitOptions, setUnitOptions] = useState(new Array<JSX.Element>());
 
-  async componentDidMount() {
-    const units: Unit[] = await getUnits();
-    const input = this.state.input;
-    let error = this.state.error;
-    if (units.length == 0) {
-      error = "We don't have any units."
-    } else {
-      input.unitId = units[0].id;
+  useEffect(() => {
+    async function fetchApi() {
+      const units = await getUnits();
+      setUnits(units);
+      if (units.length == 0) {
+        setError("We don't have any units.")
+      } else {
+        input.unitId = units[0].id;
+        setValues(input)
+        const options = units.map((unit) =>
+          <option value={unit.id} id={unit.id} key={unit.name}>{unit.name}</option>
+        );
+        setUnitOptions(options);
+      }
     }
-    this.setState({units: units, input: input, error: error});
-  }
-     
-  handleChange(event: { target: { name: string | number; value: any }; }) {
-    let input = this.state.input;
-    input[event.target.name] = event.target.value;
 
-    this.setState({
-      input: input
-    });
-  }
+    fetchApi();
+  }, [])
 
-  handleSelectedChange(event: { target: any; }) {
-    let input = this.state.input;
-    input.unitId = event.target.value;
-
-    this.setState({
-      input: input
-    });
-  }
-     
-  async handleSubmit(event: { preventDefault: () => void; }) {
+  const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
 
-    const data: NewProductData = this.state.input as Input
-
+    const data: NewProductData = input as Input
     const result = await createNewProduct(data)
-    let newProductId = result.response?.data ?? '';
-
-    this.setState({input: new Input(), error: result.error, newProductId: newProductId})
+    setError(result?.error ?? '');
+    const newProductId = result.response?.data ?? '';
+    if (newProductId && error.length != 0) {
+      navigate('/products');
+    }
   }
-     
-  render() {
-    let unitOptions = this.state.units.map((unit) =>
-      <option value={unit.id} id={unit.id} key={unit.name}>{unit.name}</option>
-    );
 
-    const newProductId = this.state.newProductId;
-    const error = this.state.error;
-    
-    return (
-      <Form onSubmit={this.handleSubmit} action="/products">
-        {error && (
-          <div className="text-danger">
-            <h6>{error}</h6>
-          </div>
-        ) || newProductId && (
-          <Navigate to="/products" replace={true} />
-        )}
-        <Form.Group className="mb-3" controlId="formBasicName">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            id="name"
-            name="name"
-            value={this.state.input.name}
-            onChange={this.handleChange}
-            required
-            type="text"
-            placeholder="Enter name"
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicUnit">
-          <Form.Label>Unit</Form.Label>
-          <Form.Select
-            id="units"
-            name="units"
-            value={this.state.input.unit}
-            onChange={this.handleSelectedChange}
-            required
-            placeholder="Enter unit"
-          >
-            {unitOptions}
-          </Form.Select>
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicShelfLife">
-          <Form.Label>Shelf life</Form.Label>
-          <Form.Control
-            id="shelfLife"
-            name="shelfLife"
-            value={this.state.input.shelfLife}
-            onChange={this.handleChange}
-            required
-            type="number"
-            min="1"
-            max="365250"
-            placeholder="Enter shelf life (days)"
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicDescription">
-          <Form.Label>Description</Form.Label>
-          <Form.Control
-            id="description"
-            name="description"
-            value={this.state.input.description}
-            onChange={this.handleChange}
-            as="textarea"
-            required
-            rows={3}
-            placeholder="Enter description" />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>      
-      </Form>
-    );
-  }
+  return (
+    <Form onSubmit={handleSubmit} action="/products">
+      <div className="text-danger"><h6>{error}</h6></div>
+      <Form.Group className="mb-3" controlId="formBasicName">
+        <Form.Label>Name</Form.Label>
+        <Form.Control
+          id="name"
+          name="name"
+          value={input.name}
+          onChange={(event) => {setValues({...input, name: event.target.value});}}
+          required
+          type="text"
+          placeholder="Enter name"
+        />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="formBasicUnit">
+        <Form.Label>Unit</Form.Label>
+        <Form.Select
+          id="units"
+          name="units"
+          value={input.unitId}
+          onChange={(event) => {setValues({...input, unitId: event.target.value});}}
+          required
+        >
+          {unitOptions}
+        </Form.Select>
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="formBasicShelfLife">
+        <Form.Label>Shelf life</Form.Label>
+        <Form.Control
+          id="shelfLife"
+          name="shelfLife"
+          value={input.shelfLife}
+          onChange={(event) => {setValues({...input, shelfLife: event.target.value});}}
+          required
+          type="number"
+          min="1"
+          max="365250"
+          placeholder="Enter shelf life (days)"
+        />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="formBasicDescription">
+        <Form.Label>Description</Form.Label>
+        <Form.Control
+          id="description"
+          name="description"
+          value={input.description}
+          onChange={(event) => {setValues({...input, description: event.target.value});}}
+          as="textarea"
+          required
+          rows={3}
+          placeholder="Enter description" />
+      </Form.Group>
+      <Button variant="primary" type="submit">
+        Submit
+      </Button>      
+    </Form>
+  );
 }
-  
+
+
 export default NewProducForm;
