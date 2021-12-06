@@ -4,7 +4,7 @@ import { getToken } from './Common';
 
 function getHeaders() {
     return {
-            Auhorization: 'Bearer ' + getToken()
+            Authorization: 'Bearer ' + getToken()
         }
 }
 
