@@ -1,19 +1,8 @@
-import axios from "axios";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import config from "../config";
+import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import { Navigate, useNavigate } from "react-router-dom";
-import { Unit } from "../types";
-import { signIn, getUnits } from "../Utils/Api";
+import { signIn } from "../Utils/Api";
+import { setUserSession } from "../Utils/Common";
 
-interface LooseObject {
-  [key: string]: any;
-}
-
-class Error {
-  message: string = "";
-  status: number = 0;
-}
 
 class Input {
   email: string = "";
@@ -23,17 +12,8 @@ class Input {
 type SignInData = Input;
 
 function SignInForm() {
-  const navigate = useNavigate();
   const [input, setValues] = useState(new Input());
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    async function fetchApi() {
-      setValues(input);
-    }
-
-    fetchApi();
-  }, []);
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
@@ -44,10 +24,10 @@ function SignInForm() {
 
     const token = result.response?.data.token ?? "";
     const user = result.response?.data.id ?? "";
-    // setUserSession(token, user)
+    setUserSession(token, user)
 
-    if (user) {
-      navigate("/");
+    if (user && token) {
+      window.location.href = "/";
     }
   };
 
