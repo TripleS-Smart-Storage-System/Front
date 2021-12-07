@@ -1,5 +1,5 @@
 import './App.css';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header'
 import Home from './pages/Home'
 import Products from './pages/Products'
@@ -11,6 +11,7 @@ import EditProduct from './pages/EditProduct';
 import { removeUserSession } from './Utils/Common';
 import Users from './pages/Users';
 import EditUser from './pages/EditUser';
+import { useEffect } from 'react';
 
 const App = () => (
   <div className="app">
@@ -54,14 +55,20 @@ const BadRequest = () => (
 );
 
 function Logout() {
+  removeUserSession()
+ 
+  useEffect(() => {
+    setTimeout(function() {
+      window.location.href="/"
+    }, 500)
+  }, [])
+
   return (
     <div className="page-not-found">
       <div className="text-center py-5">
         <h1 className="display-1">Bye</h1>
         <h2>Log out</h2>
       </div>
-      {removeUserSession()}
-      <Navigate to="/" replace={true} />
     </div>
   );
 }
