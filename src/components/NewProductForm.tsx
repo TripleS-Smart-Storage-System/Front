@@ -49,7 +49,7 @@ function NewProducForm() {
     const result = await createNewProduct(data)
     setError(result?.error ?? '');
     const newProductId = result.response?.data ?? '';
-    if (newProductId && error.length != 0) {
+    if (newProductId && error.length == 0) {
       navigate('/products');
     }
   }

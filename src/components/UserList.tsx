@@ -5,7 +5,7 @@ import { Card, Col, Row } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import { PencilFill } from 'react-bootstrap-icons';
 import { User } from '../types';
-import { getUsers } from '../Utils/Api';
+import { deleteUser, getUsers } from '../Utils/Api';
 
 class UserList extends React.Component<{}, {users: User[]}> {
     constructor(props: any) {
@@ -22,14 +22,7 @@ class UserList extends React.Component<{}, {users: User[]}> {
     }
 
     async onClickRemove(userId: string) {
-        let error = '';
-        await axios.delete(config.serverUrl + '/User', {params: {'id': userId}}).then(
-            response => {
-                if (response.status < 200 || response.status >= 300) {
-                    error = response.statusText;
-                }
-            }
-        );
+        await deleteUser(userId);
         await this.componentDidMount();
     }
 

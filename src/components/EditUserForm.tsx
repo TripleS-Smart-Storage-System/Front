@@ -6,7 +6,7 @@ import { Navigate } from "react-router-dom";
 import { User, Unit } from '../types';
 import { truncateSync } from 'fs';
 import { couldStartTrivia } from 'typescript';
-import { getUser } from '../Utils/Api';
+import { getUser, updateUser } from '../Utils/Api';
 
 interface LooseObject {
   [key: string]: any
@@ -82,21 +82,10 @@ class EditProducForm extends React.Component<{userId: string}, { userId: string,
     const data: EditUserData = this.state.input as EditUserData;
     data.id = (this.props.userId).toString();
 
-    let success = false;
-    let error = new Error();
-    await axios.put(config.serverUrl + '/User', data).then(
-      response => {
-        success = true;
-        if (response.status < 200 || response.status >= 300) {
-          error.message = response.statusText;
-          error.status = response.status;
-          success = false;
-        }
-      }
-    ).catch(function (err) {
-      error.message = err.message;
-      error.status = err.status;
-    });
+    const error = new Error();
+    const result = await updateUser(data);
+    error.message = result?.error ?? '';
+    let success = error.message.length == 0;
 
     this.setState({errors: error, success: success})
   }

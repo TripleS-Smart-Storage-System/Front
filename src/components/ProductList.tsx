@@ -6,7 +6,7 @@ import { Card, Col, Row } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import { PencilFill, TrashFill} from 'react-bootstrap-icons';
 import { Product } from '../types';
-import { getProducts } from '../Utils/Api';
+import { deleteProduct, getProducts } from '../Utils/Api';
 
 class ProductList extends React.Component<{}, {products: Product[]}> {
     constructor(props: any) {
@@ -23,14 +23,7 @@ class ProductList extends React.Component<{}, {products: Product[]}> {
     }
 
     async onClickRemove(productId: string) {
-        let error = '';
-        await axios.delete(config.serverUrl + '/Product', {params: {'id': productId}}).then(
-            response => {
-                if (response.status < 200 || response.status >= 300) {
-                    error = response.statusText;
-                }
-            }
-        );
+        await deleteProduct(productId);
         await this.componentDidMount();
     }
 
@@ -55,7 +48,7 @@ class ProductList extends React.Component<{}, {products: Product[]}> {
                                     </Link>
                                 </Col>
                                 <Col>
-                                    <TrashFill color="red" onClick={e => {this.onClickRemove(p.id)}} />
+                                    <TrashFill color="red" onClick={() => {this.onClickRemove(p.id)}} />
                                 </Col>
                             </Row>
                         </Col>

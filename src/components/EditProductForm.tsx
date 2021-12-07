@@ -4,7 +4,7 @@ import config from '../config'
 import { Button, Form } from 'react-bootstrap';
 import { Navigate } from "react-router-dom";
 import { Product, Unit } from '../types';
-import { getProduct, getUnits } from '../Utils/Api'
+import { getProduct, getUnits, updateProduct } from '../Utils/Api'
 
 interface LooseObject {
   [key: string]: any
@@ -84,19 +84,9 @@ class EditProducForm extends React.Component<{productId: string}, { productId: s
     const data: EditProductData = this.state.input as EditProductData;
     data.id = (this.props.productId).toString();
 
-    let success = false;
-    let error = '';
-    await axios.put(config.serverUrl + '/Product', data).then(
-      response => {
-        success = true;
-        if (response.status < 200 || response.status >= 300) {
-          error = response.statusText;
-          success = false;
-        }
-      }
-    ).catch(function (err) {
-      error = err.message;
-    });
+    const result = await updateProduct(data);
+    const error = result?.error ?? '';
+    const success = error.length == 0;
 
     this.setState({error: error, success: success})
   }

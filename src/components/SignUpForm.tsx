@@ -21,7 +21,6 @@ class Input implements LooseObject  {
 class Error implements LooseObject {
   confirm_password: string = "";
   message: string = "";
-  status: number = 0;
 }
 
 class NewUserData {
@@ -70,7 +69,6 @@ class SignUpForm extends React.Component<{}, { input: LooseObject, success: bool
       const result = await signUp(data);
       if (result.error) {
         errors.message = result.error;
-        errors.status = 0;
       } else {
         success = true;
       }
