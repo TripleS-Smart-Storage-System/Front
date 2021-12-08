@@ -116,6 +116,10 @@ export async function signIn<T>(data: T): Promise<PostResponse> {
   return await createNewObject('/Account/login', data)
 }
 
+export async function updateRoles<T>(data: T): Promise<PostResponse> {
+  return await createNewObject('/Account/change-roles', data)
+}
+
 export async function updateProduct<T>(data: T): Promise<PostResponse> {
   return await UpdateObject('/Product', data)
 }

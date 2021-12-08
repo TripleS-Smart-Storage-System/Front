@@ -4,7 +4,8 @@ import config from "../config";
 import { Button, Form } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Role } from "../types";
-import { getRoles, getUser } from "../Utils/Api";
+import { getRoles, getUser, updateRoles } from "../Utils/Api";
+import ChangeRole from "../pages/Roles";
 
 interface LooseObject {
   [key: string]: any;
@@ -19,7 +20,13 @@ class Input {
   roleId: string = "";
 }
 
+class Changes {
+  userId: string = "";
+  roles: Array<Role> = new Array<Role>();
+}
+
 type ChangeRoleData = Input;
+type ChangesData = Changes;
 
 function ChangeRoleForm(props: { userId: string }) {
   const navigate = useNavigate();
@@ -29,6 +36,11 @@ function ChangeRoleForm(props: { userId: string }) {
   const [roles, setRoles] = useState(new Array<Role>());
   const [currentRoles, putRoles] = useState("");
   const [roleOptions, setRoleOptions] = useState(new Array<JSX.Element>());
+  let change = {
+    userId: "",
+    roles: new Array<String>(),
+  };
+  change.userId = userId;
 
   useEffect(() => {
     async function fetchApi() {
@@ -47,6 +59,7 @@ function ChangeRoleForm(props: { userId: string }) {
         setRoleOptions(options);
       }
       const userData = await getUser(userId);
+      //change.roles = userData.roles;
       let allRoles = "";
       for (let i = 0; i < userData.roles.length; ++i) {
         allRoles = allRoles + userData.roles[i].name;
@@ -62,14 +75,24 @@ function ChangeRoleForm(props: { userId: string }) {
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
+    const userData = await getUser(userId);
+    //change.roles = userData.roles;
+    for (let i = 0; i < userData.roles.length; ++i) {
+      change.roles.push(userData.roles[i].id);
+    }
+    //const data: ChangesData = change as Changes;
+    const result = await updateRoles(change);
+    const error = result?.error ?? "";
 
-    const data: ChangeRoleData = input as Input;
-    // const result = await ();                                                          TODO: update user
-    setError("");
+    if (error) {
+      setError(error);
+    } else {
+      navigate("/users");
+    }
   };
 
   return (
-    <Form onSubmit={handleSubmit} action="/">
+    <Form onSubmit={handleSubmit}>
       <div className="text-danger">
         <h6>{error}</h6>
       </div>
@@ -94,10 +117,6 @@ function ChangeRoleForm(props: { userId: string }) {
 
       <Button variant="primary" type="submit">
         +
-      </Button>
-      <Form.Label>-</Form.Label>
-      <Button variant="primary" type="submit">
-        -
       </Button>
     </Form>
   );
