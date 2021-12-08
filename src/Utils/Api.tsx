@@ -1,4 +1,4 @@
-import { Product, Unit, User } from '../types';
+import { Product, Unit, User, Role } from '../types';
 import { del, get, post, put } from './AxiosWrapper'
 import { AxiosResponse } from 'axios';
 import { rejects } from 'assert';
@@ -82,6 +82,10 @@ function handleError(error: any) {
 
 export async function getUnits() {
   return await getObjectList<Unit>('/Unit/units');
+}
+
+export async function getRoles() {
+  return await getObjectList<Role>('/Role/roles');
 }
 
 export async function getProducts() {

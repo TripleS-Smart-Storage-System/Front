@@ -10,6 +10,7 @@ import Product from './pages/Product'
 import NewProduct from './pages/NewProduct'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
+import ChangeRole from './pages/Roles'
 import EditProduct from './pages/EditProduct';
 import Users from './pages/Users';
 import EditUser from './pages/EditUser';
@@ -37,6 +38,7 @@ const Main = () => (
       <Route path='/signup' element={<SignUp />} />
       <Route path='/signin' element={<SignIn />} />
       <Route path='/logout' element={<Logout />} />
+      <Route path='/roles/edit/:id' element={<ChangeRole />} />
       <Route path='/403' element={<AccessDenied />} />
       <Route path='/401' element={<Unauthorized />} />
       <Route path='/400' element={<BadRequest />} />
