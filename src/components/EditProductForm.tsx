@@ -1,17 +1,11 @@
-import axios from 'axios';
-import React from 'react';
-import config from '../config'
+import React, { useLayoutEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Product, Unit } from '../types';
-import { truncateSync } from 'fs';
-import { couldStartTrivia } from 'typescript';
+import { getProduct, getUnits, updateProduct } from '../Utils/Api'
 
-interface LooseObject {
-  [key: string]: any
-}
 
-class Input implements LooseObject {
+class Input {
   unitId: string = "";
   name: string = "";
   description: string = "";
@@ -22,177 +16,116 @@ class EditProductData extends Input {
   id: string = "";
 }
 
-class EditProducForm extends React.Component<{productId: string}, { productId: string, input: LooseObject, units: Unit[], success: boolean, error: string}> {
-  constructor(props: {productId: string}) {
-    super(props);
-    this.state = {
-      productId: props.productId,
-      input: new Input(),
-      units: new Array<Unit>(),
-      success: false,
-      error: ''
-    };
-    
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSelectedChange = this.handleSelectedChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.getUnits = this.getUnits.bind(this);
-    this.getProduct = this.getProduct.bind(this);
-  }
+function EditProducForm(props: {productId: string}) {
+  const navigate = useNavigate();
+  const productId = props.productId
+  const [input, setValues] = useState(new Input())
+  const [units, setUnits] = useState(new Array<Unit>())
+  const [error, setError] = useState('')
+  
+  useLayoutEffect(() => {
+    async function fetchApi() {
+      const units: Unit[] = await getUnits();
+      setUnits(units);  
+      if (units.length == 0) {
+        setError("We don't have any units.")
+      } else {
+        input.unitId = units[0].id;
+      }
 
-  async componentDidMount() {
-    const units: Unit[] = await this.getUnits();
-    const input = this.state.input;
-    let error = this.state.error;
-    if (units.length == 0) {
-      error = "We don't have any units."
-    } else {
-      input.unitId = units[0].id;
+      const product: Product = await getProduct(productId);
+      if (product.id != productId) {
+        setError("Something went wrong")
+      } else {
+        setValues({
+          unitId: product.unit.id,
+          name: product.name,
+          description: product.description,
+          shelfLife: product.shelfLife.split('.')[0]
+        });
+      }
     }
-
-    const productId = this.state.productId;
-    const product: Product = await this.getProduct(productId);
-    if (product.id != productId) {
-      error = "Something went wrong"
-    } else {
-      input.unitId = product.unit.id;
-      input.name = product.name;
-      input.description = product.description;
-      input.shelfLife = product.shelfLife.split('.')[0];
-    }
-    this.setState({units: units, input: input, error: error});
-  }
-
-  async getUnits() {
-    const response = await axios.get<Unit[]>(config.serverUrl + '/Unit/units');
-    const units: Unit[] = response.data;
-    return units;
-  }
-
-  async getProduct(id: String) {
-    const response = await axios.get<Product>(config.serverUrl + '/Product?id=' + id);
-    const product: Product = response.data;
-    return product;
-  }
+    fetchApi()
+  }, [])
      
-  handleChange(event: { target: { name: string | number; value: any }; }) {
-    let input = this.state.input;
-    input[event.target.name] = event.target.value.toString();
-
-    this.setState({
-      input: input
-    });
-  }
-
-  handleSelectedChange(event: { target: any; }) {
-    let input = this.state.input;
-    input.unitId = event.target.value;
-
-    this.setState({
-      input: input
-    });
-  }
-     
-  async handleSubmit(event: { preventDefault: () => void; }) {
+  const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
 
-    const data: EditProductData = this.state.input as EditProductData;
-    data.id = (this.props.productId).toString();
+    const data: EditProductData = input as EditProductData;
+    data.id = (props.productId).toString();
 
-    let success = false;
-    let error = '';
-    await axios.put(config.serverUrl + '/Product', data).then(
-      response => {
-        success = true;
-        if (response.status < 200 || response.status >= 300) {
-          error = response.statusText;
-          success = false;
-        }
-      }
-    ).catch(function (err) {
-      error = err.message;
-    });
-
-    this.setState({error: error, success: success})
+    const result = await updateProduct(data);
+    const error = result?.error ?? '';
+    if (error) {
+      setError(error)
+    } else {
+      navigate('/products')
+    }
   }
-     
-  render() {
-    const unitId = this.state.input.unitId;
-    const units = this.state.units;
-    const index = units.findIndex(u => u.id == unitId);
-    const unitOptions: JSX.Element[] = units.map((unit) =>
-      <option selected={unitId == unit.id} value={unit.id} id={unit.id} key={unit.name}>{unit.name}</option>
-    );
-
-    const success = this.state.success;
-    const error = this.state.error;
     
-    return (
-      <Form onSubmit={this.handleSubmit} action="/products">
-        {error && (
-          <div className="text-danger">
-            <h6>{error}</h6>
-          </div>
-        ) || success && (
-          <Navigate to="/products" replace={true} />
+  return (
+    <Form onSubmit={handleSubmit} action="/products">
+      <div className="text-danger">
+        <h6>{error}</h6>
+      </div>
+      <Form.Group className="mb-3" controlId="formBasicName">
+        <Form.Label>Name</Form.Label>
+        <Form.Control
+          id="name"
+          name="name"
+          value={input.name}
+          onChange={e => {setValues({...input, name: e.target.value});}}
+          required
+          type="text"
+          placeholder="Enter name"
+        />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="formBasicUnit">
+        <Form.Label>Unit</Form.Label>
+        <Form.Select
+          id="units"
+          name="units"
+          value={input.unitId}
+          onChange={e => {setValues({...input, unitId: e.target.value})}}
+          required
+          placeholder="Enter unit"
+        >
+        {units.map((unit) =>
+          <option selected={input.unitId == unit.id} value={unit.id} id={unit.id} key={unit.name}>{unit.name}</option>
         )}
-        <Form.Group className="mb-3" controlId="formBasicName">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            id="name"
-            name="name"
-            value={this.state.input.name}
-            onChange={this.handleChange}
-            required
-            type="text"
-            placeholder="Enter name"
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicUnit">
-          <Form.Label>Unit</Form.Label>
-          <Form.Select
-            id="units"
-            name="units"
-            value={this.state.input.unit}
-            onChange={this.handleSelectedChange}
-            required
-            placeholder="Enter unit"
-          >
-            {unitOptions}
-          </Form.Select>
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicShelfLife">
-          <Form.Label>Shelf life</Form.Label>
-          <Form.Control
-            id="shelfLife"
-            name="shelfLife"
-            value={this.state.input.shelfLife}
-            onChange={this.handleChange}
-            required
-            type="number"
-            min="1"
-            max="365250"
-            placeholder="Enter shelf life (days)"
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="formBasicDescription">
-          <Form.Label>Description</Form.Label>
-          <Form.Control
-            id="description"
-            name="description"
-            value={this.state.input.description}
-            onChange={this.handleChange}
-            as="textarea"
-            required
-            rows={3}
-            placeholder="Enter description" />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Edit
-        </Button>      
-      </Form>
-    );
-  }
+        </Form.Select>
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="formBasicShelfLife">
+        <Form.Label>Shelf life</Form.Label>
+        <Form.Control
+          id="shelfLife"
+          name="shelfLife"
+          value={input.shelfLife}
+          onChange={e => {setValues({...input, shelfLife: e.target.value.toString()});}}
+          required
+          type="number"
+          min="1"
+          max="365250"
+          placeholder="Enter shelf life (days)"
+        />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="formBasicDescription">
+        <Form.Label>Description</Form.Label>
+        <Form.Control
+          id="description"
+          name="description"
+          value={input.description}
+          onChange={e => {setValues({...input, description: e.target.value});}}
+          as="textarea"
+          required
+          rows={3}
+          placeholder="Enter description" />
+      </Form.Group>
+      <Button variant="primary" type="submit">
+        Edit
+      </Button>      
+    </Form>
+  );
 }
   
 export default EditProducForm;

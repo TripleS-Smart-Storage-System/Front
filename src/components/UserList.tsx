@@ -1,11 +1,11 @@
 import axios from 'axios';
 import React from 'react';
 import config from '../config'
-import empty from '../empty.png'
-import { Button, Card, Col, Row } from 'react-bootstrap';
-import { Link, Navigate } from "react-router-dom";
-import { PencilFill, TrashFill} from 'react-bootstrap-icons';
+import { Card, Col, Row } from 'react-bootstrap';
+import { Link } from "react-router-dom";
+import { PencilFill } from 'react-bootstrap-icons';
 import { User } from '../types';
+import { deleteUser, getUsers } from '../Utils/Api';
 
 class UserList extends React.Component<{}, {users: User[]}> {
     constructor(props: any) {
@@ -14,29 +14,15 @@ class UserList extends React.Component<{}, {users: User[]}> {
             users: new Array<User>()
         }
         this.onClickRemove = this.onClickRemove.bind(this);
-        this.getUsers = this.getUsers.bind(this);
     }
   
     async componentDidMount() {
-        const users = await this.getUsers();
+        const users = await getUsers();
         this.setState({users: users});
-    }
-  
-    async getUsers() {
-        const response = await axios.get<User[]>(config.serverUrl + '/User/users');
-        const users: User[] = response.data;
-        return users;
     }
 
     async onClickRemove(userId: string) {
-        let error = '';
-        await axios.delete(config.serverUrl + '/User', {params: {'id': userId}}).then(
-            response => {
-                if (response.status < 200 || response.status >= 300) {
-                    error = response.statusText;
-                }
-            }
-        );
+        await deleteUser(userId);
         await this.componentDidMount();
     }
 
