@@ -1,4 +1,4 @@
-import { Product, Unit, User, Role } from '../types';
+import { Product, Unit, User, Role, Supply } from '../types';
 import { del, get, post, put } from './AxiosWrapper'
 import { AxiosResponse } from 'axios';
 import { rejects } from 'assert';
@@ -96,6 +96,10 @@ export async function getUsers() {
   return await getObjectList<User>('/User/users');
 }
 
+export async function getSupplies() {
+  return await getObjectList<Supply>('/supplies');
+}
+
 export async function getProduct(id: String) {
   return await getObject<Product>('/Product', {id: id});
 }
@@ -134,4 +138,8 @@ export async function deleteProduct(id: string): Promise<PostResponse> {
 
 export async function deleteUser(id: string): Promise<PostResponse> {
   return await deleteObject('/User', {id: id})
+}
+
+export async function deleteSupply(id: string): Promise<PostResponse> {
+  return await deleteObject('/Supply', {id: id})
 }

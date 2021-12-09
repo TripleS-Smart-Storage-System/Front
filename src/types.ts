@@ -23,3 +23,28 @@ export interface User {
   nickName: string;
   roles: Role[];
 }
+
+export interface AcceptUser {
+  id: string;
+  name: string;
+  surName: string;
+  nickName: string;
+}
+
+export interface SupplyCreatedUser {
+  id: string;
+  name: string;
+  surName: string;
+  nickName: string;
+}
+
+export interface Supply {
+  id: string;
+  supplyCreatedUserId: string;
+  acceptUserId: string;
+  dateOrdered: Date;
+  dateAccepted: Date;
+  isArrived: boolean;
+  acceptUser: AcceptUser;
+  supplyCreatedUser: SupplyCreatedUser;
+}
