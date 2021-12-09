@@ -27,7 +27,7 @@ class UserList extends React.Component<{}, {users: User[]}> {
     }
 
     render() {
-      const users = this.state.users; 
+      const users = this.state.users;
 
       const userList = users.map(p => (
         <Col>
@@ -59,9 +59,11 @@ class UserList extends React.Component<{}, {users: User[]}> {
                     </Row>
                     <Row xs="auto" className="justify-content-between">
                         <Col>
-                            <div className="p-2 m-1 border rounded">
-                                Roles: {p.roles.map(r => r.name)}
-                            </div>
+                            <Link to={`roles/edit/${p.id}`} style={{ textDecoration: 'none' }}>
+                                <div className="p-2 m-1 border rounded">
+                                    Roles: {p.roles.map(r => r.name).join(', ')}
+                                </div>
+                            </Link>
                         </Col>
                     </Row>
                 </Card.Text>

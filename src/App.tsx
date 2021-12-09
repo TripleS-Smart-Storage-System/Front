@@ -1,7 +1,5 @@
 import './App.css';
-import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { removeUserSession } from './Utils/Common';
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -31,6 +29,7 @@ const Main = () => (
       <Route path='/' element={<Home />} />
       <Route path='/users' element={<Users />}/>
       <Route path='/users/edit/:id' element={<EditUser />}/>
+      <Route path='/users/roles/edit/:id' element={<ChangeRole />} />
       <Route path='/products' element={<Products />}/>
       <Route path='/products/new' element={<NewProduct />}/>
       <Route path='/products/edit/:id' element={<EditProduct />}/>
@@ -38,7 +37,6 @@ const Main = () => (
       <Route path='/signup' element={<SignUp />} />
       <Route path='/signin' element={<SignIn />} />
       <Route path='/logout' element={<Logout />} />
-      <Route path='/roles/edit/:id' element={<ChangeRole />} />
       <Route path='/403' element={<AccessDenied />} />
       <Route path='/401' element={<Unauthorized />} />
       <Route path='/400' element={<BadRequest />} />
