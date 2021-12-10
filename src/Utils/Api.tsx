@@ -112,6 +112,14 @@ export async function createNewProduct<T>(data: T): Promise<PostResponse> {
   return await createNewObject('/Product', data)
 }
 
+export async function createSupplyOrder<T>(data: T): Promise<PostResponse> {
+  return await createNewObject('/Supply', data)
+}
+
+export async function createSupplyProductOrder<T>(data: T): Promise<PostResponse> {
+  return await createNewObject('/supply-product', data)
+}
+
 export async function signUp<T>(data: T): Promise<PostResponse> {
   return await createNewObject('/Account/register', data)
 }

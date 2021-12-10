@@ -15,6 +15,7 @@ import Users from './pages/Users';
 import EditUser from './pages/EditUser';
 import Logout from './pages/Logout';
 import Supplies from './pages/Supplies';
+import NewSupplyOrder from './pages/NewSupplyOrder';
 
 const App = () => (
   <div className="app">
@@ -36,6 +37,7 @@ const Main = () => (
       <Route path='/products/edit/:id' element={<EditProduct />}/>
       <Route path='/products/:id' element={<Product />}/>
       <Route path='/supplies' element={<Supplies />}/>
+      <Route path='/supplies/new' element={<NewSupplyOrder />}/>
       <Route path='/signup' element={<SignUp />} />
       <Route path='/signin' element={<SignIn />} />
       <Route path='/logout' element={<Logout />} />

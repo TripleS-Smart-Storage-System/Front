@@ -51,10 +51,6 @@ class SupplyList extends React.Component<{}, {supplies: Supply[]}> {
 
       return (
         <div>
-            {(supplies.length == 0) && (
-                <NoElements text="No supplies"/>
-            )}
-
             <Row xs={1} className="g-4 mt-0">
                 <Table striped bordered hover>
                     <thead>
@@ -70,6 +66,10 @@ class SupplyList extends React.Component<{}, {supplies: Supply[]}> {
                     </tbody>
                 </Table>
             </Row>
+
+            {(supplies.length == 0) && (
+                <NoElements text="No supplies"/>
+            )}
         </div>
       );
      }

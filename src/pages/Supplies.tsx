@@ -10,7 +10,7 @@ const Supplies = () => (
           <h1>Supplies</h1>
         </Col>
         <Col>
-          <NewPageButton link="/supply/new" text="Create supply order" />
+          <NewPageButton link="/supplies/new" text="Create supply order" />
         </Col>
       </Row>
       <SupplyList />
