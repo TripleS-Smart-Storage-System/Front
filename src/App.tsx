@@ -1,7 +1,5 @@
 import './App.css';
-import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { removeUserSession } from './Utils/Common';
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -10,6 +8,7 @@ import Product from './pages/Product'
 import NewProduct from './pages/NewProduct'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
+import ChangeRole from './pages/Roles'
 import EditProduct from './pages/EditProduct';
 import Users from './pages/Users';
 import EditUser from './pages/EditUser';
@@ -30,6 +29,7 @@ const Main = () => (
       <Route path='/' element={<Home />} />
       <Route path='/users' element={<Users />}/>
       <Route path='/users/edit/:id' element={<EditUser />}/>
+      <Route path='/users/roles/edit/:id' element={<ChangeRole />} />
       <Route path='/products' element={<Products />}/>
       <Route path='/products/new' element={<NewProduct />}/>
       <Route path='/products/edit/:id' element={<EditProduct />}/>
