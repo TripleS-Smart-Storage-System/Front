@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Col, Row, Form, Container } from "react-bootstrap";
 import {useNavigate } from "react-router-dom";
 import { Role, User } from "../types";
@@ -39,16 +39,24 @@ function ChosenRoles(props: {roles: Role[], onChosenRoleRemoved: (roleId: string
 
 function SelectRoles(props: {roles: Role[], onSelectedChosen: (roleId: string) => void}) {
   const unchosenRoles = props.roles;
-  let roleId = props.roles.length ? props.roles[0].id : ''
+  const [index, setIndex] = useState(0);
+
+  const getIdByIndex = (idx: number) => unchosenRoles[idx]?.id ?? ''
+
+  useLayoutEffect(() => {
+    setIndex(0)
+  }, [])
 
   const handleClick = () => {
+    const roleId = getIdByIndex(index)
     if (roleId) {
       props.onSelectedChosen(roleId)
+      setIndex(0)
     }
   }
 
-  const options = unchosenRoles.map((role) => (
-    <option selected={role.id == roleId} value={role.id} id={role.id}>
+  const options = unchosenRoles.map((role, i) => (
+    <option selected={role.id == getIdByIndex(index)} value={i} id={role.id}>
       {role.name}
     </option>
   ));
@@ -60,9 +68,9 @@ function SelectRoles(props: {roles: Role[], onSelectedChosen: (roleId: string) =
           <Form.Select
             id="roles"
             name="roles"
-            value={roleId}
+            value={index}
             onChange={(event) => {
-              {roleId = event.target.value;}
+              {setIndex(+event.target.value);}
             }}
             disabled={unchosenRoles.length == 0}
           >
@@ -86,6 +94,7 @@ function ChangeRoleForm(props: { userId: string }) {
   const [roles, setRoles] = useState(new Array<Role>());
   const [user, setUser] = useState({} as unknown as User);
   const [currentRoles, setCurrentRoles] = useState(new Array<Role>());
+  const [unchosenRoles, setUnchosenRoles] = useState(new Array<Role>());
 
   useEffect(() => {
     async function fetchApi() {
@@ -95,6 +104,7 @@ function ChangeRoleForm(props: { userId: string }) {
 
       const roles = await getRoles();
       setRoles(roles);
+      setUnchosenRoles(roles.filter(r => !userData.roles.map(cr => cr.id).includes(r.id)))
       if (roles.length == 0) {
         setError("We don't have any roles.");
       }
@@ -118,12 +128,15 @@ function ChangeRoleForm(props: { userId: string }) {
 
   const removeChosenRole = (roleId: string) => {
     setCurrentRoles(currentRoles.filter(r => r.id != roleId))
+    const role = roles.find(r => r.id == roleId)!
+    setUnchosenRoles(unchosenRoles.concat([role]))
   }
 
   const choseSelectedRole = (roleId: string) => {
     const role = roles.find(r => r.id === roleId)!
     const chosenRoles = currentRoles.concat([role])
     setCurrentRoles(chosenRoles)
+    setUnchosenRoles(roles.filter(r => !chosenRoles.map(cr => cr.id).includes(r.id)))
   }
 
   return (
@@ -134,18 +147,17 @@ function ChangeRoleForm(props: { userId: string }) {
       <div>
         <h6>Nickname: {user.nickName}</h6>
       </div>
+      <Form.Group className="mb-3" controlId="formBasicRole">
+        <Form.Label>Available roles: </Form.Label>
+        <SelectRoles roles={unchosenRoles} onSelectedChosen={choseSelectedRole} />
+      </Form.Group>
       <Form.Group className="mb-3" controlId="formCurrentRole">
         <Form.Label>Chosen roles:</Form.Label>
         <ChosenRoles roles={currentRoles} onChosenRoleRemoved={removeChosenRole} />
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicRole">
-        <Form.Label>Available roles: </Form.Label>
-        <SelectRoles roles={roles.filter(r => !currentRoles.map(cr => cr.id).includes(r.id))} onSelectedChosen={choseSelectedRole} />
-
-        <Button variant="primary" type="submit">
-          Save
-        </Button>
-      </Form.Group>
+      <Button variant="primary" type="submit">
+        Save
+      </Button>
     </Form>
   );
 }
