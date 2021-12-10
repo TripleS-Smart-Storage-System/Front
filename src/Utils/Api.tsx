@@ -2,6 +2,7 @@ import { Product, Unit, User, Role, Supply } from '../types';
 import { del, get, post, put } from './AxiosWrapper'
 import { AxiosResponse } from 'axios';
 import { rejects } from 'assert';
+import { SupplyWithProducts } from '../components/EditSupplyOrderForm';
 
 
 export interface PostResponse {
@@ -108,6 +109,10 @@ export async function getUser(id: String) {
   return await getObject<User>('/User', {id: id});
 }
 
+export async function getSupplyWithProducts(id: String) {
+  return await getObject<SupplyWithProducts>(`/supply-with-products/${id}`, {id: id});
+}
+
 export async function createNewProduct<T>(data: T): Promise<PostResponse> {
   return await createNewObject('/Product', data)
 }
@@ -150,4 +155,8 @@ export async function deleteUser(id: string): Promise<PostResponse> {
 
 export async function deleteSupply(id: string): Promise<PostResponse> {
   return await deleteObject('/Supply', {id: id})
+}
+
+export async function deleteSupplyProduct(id: string): Promise<PostResponse> {
+  return await deleteObject('/supply-product', {id: id})
 }

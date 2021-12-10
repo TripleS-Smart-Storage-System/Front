@@ -1,8 +1,8 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Col, Row, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { Product } from "../types";
-import { createSupplyOrder, createSupplyProductOrder, getProducts } from "../Utils/Api";
+import { Product, Unit } from "../types";
+import { createSupplyOrder, createSupplyProductOrder, deleteSupplyProduct, getProducts, getSupplyWithProducts } from "../Utils/Api";
 import { getUser } from "../Utils/Common";
 
 
@@ -28,7 +28,7 @@ class Supply {
   }
 }
 
-class SupplyProduct {
+class SupplyProductRequest {
   supplyId: string;
   productId: string;
   count: number;
@@ -39,23 +39,59 @@ class SupplyProduct {
   }
 }
 
-function ChosenProducts(props: {products: ProductWithCount[], onChosenRoleRemoved: (roleId: string) => void}) {
+export interface AcceptUser {
+  id: string;
+  name: string;
+  surName: string;
+  nickName: string;
+}
+
+export interface SupplyCreatedUser {
+  id: string;
+  name: string;
+  surName: string;
+  nickName: string;
+}
+
+export interface SupplyProduct {
+  id: string;
+  supplyId: string;
+  productId: string;
+  count: number;
+  isAccepted: boolean;
+  productCreatedDate: Date;
+  product: Product;
+}
+
+export interface SupplyWithProducts{
+  id: string;
+  supplyCreatedUserId: string;
+  acceptUserId: string;
+  dateOrdered: Date;
+  dateAccepted: Date;
+  isArrived: boolean;
+  acceptUser: AcceptUser;
+  supplyCreatedUser: SupplyCreatedUser;
+  supplyProducts: SupplyProduct[];
+}
+
+function ChosenProducts(props: {products: SupplyProduct[], onChosenRoleRemoved: (supplyProductId: string) => Promise<void>}) {
   const chosenProducts = props.products
-  const options = chosenProducts.map((product) => (
+  const options = chosenProducts.map((supplyProduct) => (
     <div className="justify-content-around">
-      <Row id={product.id} xs="auto" className="my-2 justify-content-between">
+      <Row id={supplyProduct.product.id} xs="auto" className="my-2 justify-content-between">
         <Col xs={6}>
           <div className="p-2 border rounded">
-            {product.name}
+            {supplyProduct.product.name}
           </div>
         </Col>
         <Col xs={3}>
           <div className="p-2 border rounded">
-            {product.count} {product.unitName}
+            {supplyProduct.count} {supplyProduct.product.unit.name}
           </div>
         </Col>
         <Col>
-          <Button className="p-2" variant="danger" onClick={e => props.onChosenRoleRemoved(product.id)}>
+          <Button className="p-2" variant="danger" onClick={e => props.onChosenRoleRemoved(supplyProduct.id)}>
             -
           </Button>
         </Col>
@@ -70,7 +106,8 @@ function ChosenProducts(props: {products: ProductWithCount[], onChosenRoleRemove
   );
 }
 
-function SelectProducts(props: {products: Product[], onSelectedChosen: (roleId: string, count: number) => void}) {
+function SelectProducts(props: {products: Product[], supplyId: string, onSelectedChosen: (product: SupplyProductRequest) => Promise<boolean>}) {
+  const supplyId = props.supplyId;
   const unchosenProducts = props.products;
   const [index, setIndex] = useState(0);
   const [count, setCount] = useState(1);
@@ -84,13 +121,20 @@ function SelectProducts(props: {products: Product[], onSelectedChosen: (roleId: 
     setCount(1)
   }, [])
 
-  const handleClick = () => {
+  const handleClick = async () => {
     const productId = getIdByIndex(index)
     if (productId) {
-      props.onSelectedChosen(productId, count)
-      unchosenProducts.splice(index, 1);
-      setCount(1)
-      setIndex(0)
+      const product = new ProductWithCount(unchosenProducts[index], count)
+      const supplyProduct = new SupplyProductRequest(product, supplyId)
+      props.onSelectedChosen(supplyProduct).then(
+        res => {
+          if(res) {
+            unchosenProducts.splice(index, 1);
+            setCount(1)
+            setIndex(0)
+          }
+        }
+      )
     }
   }
 
@@ -133,7 +177,7 @@ function SelectProducts(props: {products: Product[], onSelectedChosen: (roleId: 
           />
         </Col>
         <Col>
-          <Button variant="primary" onClick={handleClick} disabled={isDisabled}>
+          <Button variant="primary"  type="submit" onClick={handleClick} disabled={isDisabled}>
             +
           </Button>
         </Col>
@@ -142,18 +186,21 @@ function SelectProducts(props: {products: Product[], onSelectedChosen: (roleId: 
   );
 }
 
-function NewSupplyOrderForm() {
+function EditSupplyOrderForm(props: {supplyId: string}) {
   const navigate = useNavigate();
+  const supplyId = props.supplyId;
   const [error, setError] = useState("");
   const [products, setProducts] = useState(new Array<Product>());
-  const [chosenProducts, setChosenProducts] = useState(new Array<ProductWithCount>());
+  const [chosenProducts, setChosenProducts] = useState(new Array<SupplyProduct>());
   const [unchosenProducts, setUnchosenProducts] = useState(new Array<Product>());
 
   useEffect(() => {
     async function fetchApi() {
       const products = await getProducts();
       setProducts(products);
-      setUnchosenProducts(products);
+      const supply: SupplyWithProducts = await getSupplyWithProducts(supplyId);
+      setChosenProducts(supply.supplyProducts);
+      setUnchosenProducts(products.filter(p => !supply.supplyProducts.map(sp => sp.product.id).includes(p.id)));
       if (products.length == 0) {
         setError("We don't have any products.");
       }
@@ -164,43 +211,25 @@ function NewSupplyOrderForm() {
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
-
-    const user = getUser()
-    const supply = new Supply(user)
-    const supplyOrderResult = await createSupplyOrder(supply)
-    const supplyId = supplyOrderResult?.response?.data! as string ?? '';
-    let error = supplyOrderResult?.error ?? ''
-
-    if (error) {
-      setError(error);
-      return
-    }
-
-    const sendProductSupply = async (product: ProductWithCount): Promise<string> => {
-      const supplyProduct = new SupplyProduct(product, supplyId)
-      const supplyProductResult = await createSupplyProductOrder(supplyProduct)
-      error = error ? error : supplyProductResult?.error ?? ''
-      return supplyProductResult?.response?.data! as string ?? '';
-    }
-
-    const productSupplyResults = await Promise.all(chosenProducts.map(sendProductSupply))
-    if (error) {
-      setError(error);
-    } else {
-      navigate("/supplies");
-    }
   };
 
-  const removeChosenProduct = (productId: string) => {
-    setChosenProducts(chosenProducts.filter(p => p.id != productId))
-    const product = products.find(p => p.id == productId)!
-    setUnchosenProducts(unchosenProducts.concat([]))
+  const removeChosenProduct = async (supplyProductId: string) => {
+    const supplyProduct = chosenProducts[chosenProducts.findIndex(cp => cp.id == supplyProductId)!]
+    await deleteSupplyProduct(supplyProductId)
+    window.location.reload()
   }
 
-  const choseSelectedProduct = (productId: string, count: number) => {
-    const product = products.find(p => p.id === productId)!
-    setChosenProducts(chosenProducts.concat([new ProductWithCount(product, count)]))
-    setUnchosenProducts(unchosenProducts.filter(p => p.id != productId))
+  const choseSelectedProduct = async (supplyProduct: SupplyProductRequest): Promise<boolean> => {
+    console.log(supplyProduct)
+    const supplyProductResult = await createSupplyProductOrder(supplyProduct)
+    const error = supplyProductResult?.error ?? ''
+    if (error) {
+      setError(error)
+      return false
+    } else {
+      window.location.reload();
+      return true
+    }
   }
 
   return (
@@ -210,17 +239,14 @@ function NewSupplyOrderForm() {
       </div>
       <Form.Group className="mb-3" controlId="formBasicRole">
         <Form.Label>Available products: </Form.Label>
-        <SelectProducts products={unchosenProducts} onSelectedChosen={choseSelectedProduct} />
+        <SelectProducts products={unchosenProducts} supplyId={supplyId} onSelectedChosen={choseSelectedProduct} />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formNewSupply">
         <Form.Label>Chosen products:</Form.Label>
         <ChosenProducts products={chosenProducts} onChosenRoleRemoved={removeChosenProduct} />
       </Form.Group>
-      <Button variant="primary" type="submit">
-        Save
-      </Button>
     </Form>
   );
 }
 
-export default NewSupplyOrderForm;
+export default EditSupplyOrderForm;
