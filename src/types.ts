@@ -1,3 +1,11 @@
+export interface Idable{
+  id: string;
+}
+
+export interface INameable extends Idable{
+  name: string;
+}
+
 export interface Unit {
   id: string;
   name: string
@@ -83,4 +91,10 @@ export interface SupplyWithProducts{
   acceptUser: AcceptUser;
   supplyCreatedUser: SupplyCreatedUser;
   supplyProducts: SupplyProduct[];
+}
+
+export interface Warehouse{
+  id: string;
+  address: string;
+  email: string;
 }

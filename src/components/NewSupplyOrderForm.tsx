@@ -1,9 +1,15 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Col, Row, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { Product } from "../types";
-import { createSupplyOrder, createSupplyProductOrder, getProducts } from "../Utils/Api";
+import { Product, Warehouse, INameable } from "../types";
+import {
+  createSupplyOrder,
+  createSupplyProductOrder,
+  getProducts,
+  getWarehouses
+} from "../Utils/Api";
 import { getUser } from "../Utils/Common";
+import SelectObject from "./SelectObject";
 
 
 class ProductWithCount {
@@ -20,9 +26,11 @@ class ProductWithCount {
 }
 
 class SupplyRequest {
+  warehouseId: string;
   supplyCreatedUserId: string;
   dateOrdered: Date;
-  constructor (userId = '') {
+  constructor (userId = '', warehouseId= '') {
+    this.warehouseId = warehouseId;
     this.supplyCreatedUserId = userId;
     this.dateOrdered = new Date();
   }
@@ -148,6 +156,8 @@ function NewSupplyOrderForm() {
   const [products, setProducts] = useState(new Array<Product>());
   const [chosenProducts, setChosenProducts] = useState(new Array<ProductWithCount>());
   const [unchosenProducts, setUnchosenProducts] = useState(new Array<Product>());
+  const [warehouseId, setChosenWarehouse] = useState('');
+  const [warehouses, setWarehouses] = useState(new Array<Warehouse>());
 
   useEffect(() => {
     async function fetchApi() {
@@ -157,6 +167,11 @@ function NewSupplyOrderForm() {
       if (products.length == 0) {
         setError("We don't have any products.");
       }
+      const warehouses = await getWarehouses();
+      if (warehouses.length == 0) {
+        setError("We don't have any warehouses.");
+      }
+      setWarehouses(warehouses)
     }
 
     fetchApi();
@@ -166,7 +181,7 @@ function NewSupplyOrderForm() {
     event.preventDefault();
 
     const user = getUser()
-    const supply = new SupplyRequest(user)
+    const supply = new SupplyRequest(user, warehouseId)
     const supplyOrderResult = await createSupplyOrder(supply)
     const supplyId = supplyOrderResult?.response?.data! as string ?? '';
     let error = 'New order: ' + supplyOrderResult?.error ?? ''
@@ -203,11 +218,20 @@ function NewSupplyOrderForm() {
     setUnchosenProducts(unchosenProducts.filter(p => p.id != productId))
   }
 
+  const choseSelectedWarehouse = (warehouseId: string) => {
+    const warehouse = warehouses.find(w => w.id === warehouseId)!
+    setChosenWarehouse(warehouseId)
+  }
+
   return (
     <Form onSubmit={handleSubmit}>
       <div className="text-danger">
         <h6>{error}</h6>
       </div>
+      <Form.Group className="mb-3">
+        <Form.Label>Warehouse: </Form.Label>
+        <SelectObject objects={warehouses.map(w => {return {id: w.id, name: w.address}})} onSelectedChosen={choseSelectedWarehouse} />
+      </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicRole">
         <Form.Label>Available products: </Form.Label>
         <SelectProducts products={unchosenProducts} onSelectedChosen={choseSelectedProduct} />

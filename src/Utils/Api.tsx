@@ -1,4 +1,4 @@
-import { Product, Unit, User, Role, Supply } from '../types';
+import { Product, Unit, User, Role, Supply, Warehouse } from '../types';
 import { del, get, post, put } from './AxiosWrapper'
 import { AxiosResponse } from 'axios';
 import { SupplyWithProducts } from '../types';
@@ -98,6 +98,10 @@ export async function getUsers() {
 
 export async function getSupplies() {
   return await getObjectList<Supply>('/supplies');
+}
+
+export async function getWarehouses() {
+  return await getObjectList<Warehouse>('/Warehouse/warehouses');
 }
 
 export async function getProduct(id: String) {
