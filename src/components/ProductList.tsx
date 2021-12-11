@@ -33,7 +33,6 @@ class ProductList extends React.Component<{}, {products: Product[]}> {
       const productList = products.map(p => (
         <Col>
             <Card id={p.id} className="product-area">
-            <Card.Img variant="top" src={empty} />
             <Card.Body>
                 <Card.Title>
                     <Row xs="auto" className="justify-content-between">
