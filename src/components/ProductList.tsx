@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { PencilFill, TrashFill} from 'react-bootstrap-icons';
 import { Product } from '../types';
 import { deleteProduct, getProducts } from '../Utils/Api';
+import NoElements from './NoElements';
 
 class ProductList extends React.Component<{}, {products: Product[]}> {
     constructor(props: any) {
@@ -91,14 +92,6 @@ class ProductList extends React.Component<{}, {products: Product[]}> {
         </div>
       );
      }
-}
-
-function NoElements(props: {text: string}) {
-    return (
-        <div className="mh-100">
-            <h2 className="text-secondary text-center py-5">{props.text}</h2>
-        </div>
-    );
 }
 
 export default ProductList;

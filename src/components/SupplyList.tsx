@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { PencilFill, TrashFill} from 'react-bootstrap-icons';
 import { Supply } from '../types';
 import { deleteSupply, getSupplies } from '../Utils/Api';
+import NoElements from './NoElements';
 
 class SupplyList extends React.Component<{}, {supplies: Supply[]}> {
     constructor(props: any) {
@@ -75,14 +76,6 @@ class SupplyList extends React.Component<{}, {supplies: Supply[]}> {
         </div>
       );
      }
-}
-
-function NoElements(props: {text: string}) {
-    return (
-        <div className="mh-100">
-            <h2 className="text-secondary text-center py-5">{props.text}</h2>
-        </div>
-    );
 }
 
 export default SupplyList;
