@@ -30,11 +30,12 @@ class SupplyList extends React.Component<{}, {supplies: Supply[]}> {
       const tbody = supplies.map((s, i) => (
         <tr>
             <td>{i + 1}</td>
+            <td>{s.warehouse?.address ?? ''}</td>
             <td>{new Date(s.dateOrdered).toLocaleString()}</td>
             <td>{s.isArrived ? 'Arrived' : 'In progress'}</td>
             <td> 
                 {!s.isArrived && (
-                    <Row>
+                    <Row className="justify-content-around" xs="auto">
                         <Col>
                             <Link to={`edit/${s.id}`}>
                                 <PencilFill />
@@ -56,9 +57,10 @@ class SupplyList extends React.Component<{}, {supplies: Supply[]}> {
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Warehouse</th>
                             <th>Creation date</th>
                             <th>Status</th>
-                            <th></th>
+                            <th style={{width: '10%'}}></th>
                         </tr>
                     </thead>
                     <tbody>
