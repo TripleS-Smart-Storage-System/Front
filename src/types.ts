@@ -48,3 +48,39 @@ export interface Supply {
   acceptUser: AcceptUser;
   supplyCreatedUser: SupplyCreatedUser;
 }
+
+export interface AcceptUser {
+  id: string;
+  name: string;
+  surName: string;
+  nickName: string;
+}
+
+export interface SupplyCreatedUser {
+  id: string;
+  name: string;
+  surName: string;
+  nickName: string;
+}
+
+export interface SupplyProduct {
+  id: string;
+  supplyId: string;
+  productId: string;
+  count: number;
+  isAccepted: boolean;
+  productCreatedDate: Date;
+  product: Product;
+}
+
+export interface SupplyWithProducts{
+  id: string;
+  supplyCreatedUserId: string;
+  acceptUserId: string;
+  dateOrdered: Date;
+  dateAccepted: Date;
+  isArrived: boolean;
+  acceptUser: AcceptUser;
+  supplyCreatedUser: SupplyCreatedUser;
+  supplyProducts: SupplyProduct[];
+}

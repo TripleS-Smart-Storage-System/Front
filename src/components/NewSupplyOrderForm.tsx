@@ -19,7 +19,7 @@ class ProductWithCount {
   }
 }
 
-class Supply {
+class SupplyRequest {
   supplyCreatedUserId: string;
   dateOrdered: Date;
   constructor (userId = '') {
@@ -28,7 +28,7 @@ class Supply {
   }
 }
 
-class SupplyProduct {
+class SupplyProductRequest {
   supplyId: string;
   productId: string;
   count: number;
@@ -166,10 +166,10 @@ function NewSupplyOrderForm() {
     event.preventDefault();
 
     const user = getUser()
-    const supply = new Supply(user)
+    const supply = new SupplyRequest(user)
     const supplyOrderResult = await createSupplyOrder(supply)
     const supplyId = supplyOrderResult?.response?.data! as string ?? '';
-    let error = supplyOrderResult?.error ?? ''
+    let error = 'New order: ' + supplyOrderResult?.error ?? ''
 
     if (error) {
       setError(error);
@@ -177,9 +177,9 @@ function NewSupplyOrderForm() {
     }
 
     const sendProductSupply = async (product: ProductWithCount): Promise<string> => {
-      const supplyProduct = new SupplyProduct(product, supplyId)
+      const supplyProduct = new SupplyProductRequest(product, supplyId)
       const supplyProductResult = await createSupplyProductOrder(supplyProduct)
-      error = error ? error : supplyProductResult?.error ?? ''
+      error = error ? error : 'New product supply: ' + supplyProductResult?.error ?? ''
       return supplyProductResult?.response?.data! as string ?? '';
     }
 

@@ -1,8 +1,7 @@
 import { Product, Unit, User, Role, Supply } from '../types';
 import { del, get, post, put } from './AxiosWrapper'
 import { AxiosResponse } from 'axios';
-import { rejects } from 'assert';
-import { SupplyWithProducts } from '../components/EditSupplyOrderForm';
+import { SupplyWithProducts } from '../types';
 
 
 export interface PostResponse {

@@ -1,9 +1,16 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Col, Row, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { Product, Unit } from "../types";
-import { createSupplyOrder, createSupplyProductOrder, deleteSupplyProduct, getProducts, getSupplyWithProducts } from "../Utils/Api";
-import { getUser } from "../Utils/Common";
+import {
+  Product,
+  SupplyProduct,
+  SupplyWithProducts
+} from "../types";
+import { createSupplyProductOrder,
+  deleteSupplyProduct,
+  getProducts,
+  getSupplyWithProducts
+} from "../Utils/Api";
 
 
 class ProductWithCount {
@@ -19,15 +26,6 @@ class ProductWithCount {
   }
 }
 
-class Supply {
-  supplyCreatedUserId: string;
-  dateOrdered: Date;
-  constructor (userId = '') {
-    this.supplyCreatedUserId = userId;
-    this.dateOrdered = new Date();
-  }
-}
-
 class SupplyProductRequest {
   supplyId: string;
   productId: string;
@@ -37,42 +35,6 @@ class SupplyProductRequest {
     this.productId = product.id;
     this.count = product.count;
   }
-}
-
-export interface AcceptUser {
-  id: string;
-  name: string;
-  surName: string;
-  nickName: string;
-}
-
-export interface SupplyCreatedUser {
-  id: string;
-  name: string;
-  surName: string;
-  nickName: string;
-}
-
-export interface SupplyProduct {
-  id: string;
-  supplyId: string;
-  productId: string;
-  count: number;
-  isAccepted: boolean;
-  productCreatedDate: Date;
-  product: Product;
-}
-
-export interface SupplyWithProducts{
-  id: string;
-  supplyCreatedUserId: string;
-  acceptUserId: string;
-  dateOrdered: Date;
-  dateAccepted: Date;
-  isArrived: boolean;
-  acceptUser: AcceptUser;
-  supplyCreatedUser: SupplyCreatedUser;
-  supplyProducts: SupplyProduct[];
 }
 
 function ChosenProducts(props: {products: SupplyProduct[], onChosenRoleRemoved: (supplyProductId: string) => Promise<void>}) {
