@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Col, Row, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { Product, Warehouse, INameable } from "../types";
+import { Product, Warehouse } from "../types";
 import {
   createSupplyOrder,
   createSupplyProductOrder,
@@ -26,8 +26,8 @@ class ProductWithCount {
 }
 
 class SupplyRequest {
-  warehouseId: string;
   supplyCreatedUserId: string;
+  warehouseId: string;
   dateOrdered: Date;
   constructor (userId = '', warehouseId= '') {
     this.warehouseId = warehouseId;
@@ -170,8 +170,10 @@ function NewSupplyOrderForm() {
       const warehouses = await getWarehouses();
       if (warehouses.length == 0) {
         setError("We don't have any warehouses.");
+      } else {
+        setWarehouses(warehouses)
+        setChosenWarehouse(warehouses[0].id)
       }
-      setWarehouses(warehouses)
     }
 
     fetchApi();
@@ -184,17 +186,17 @@ function NewSupplyOrderForm() {
     const supply = new SupplyRequest(user, warehouseId)
     const supplyOrderResult = await createSupplyOrder(supply)
     const supplyId = supplyOrderResult?.response?.data! as string ?? '';
-    let error = 'New order: ' + supplyOrderResult?.error ?? ''
+    let error = supplyOrderResult?.error ?? ''
 
     if (error) {
-      setError(error);
+      setError('New order: ' + error);
       return
     }
 
     const sendProductSupply = async (product: ProductWithCount): Promise<string> => {
       const supplyProduct = new SupplyProductRequest(product, supplyId)
       const supplyProductResult = await createSupplyProductOrder(supplyProduct)
-      error = error ? error : 'New product supply: ' + supplyProductResult?.error ?? ''
+      error = error ? error : supplyProductResult?.error ?? ''
       return supplyProductResult?.response?.data! as string ?? '';
     }
 
@@ -219,7 +221,7 @@ function NewSupplyOrderForm() {
   }
 
   const choseSelectedWarehouse = (warehouseId: string) => {
-    const warehouse = warehouses.find(w => w.id === warehouseId)!
+    console.log(warehouseId)
     setChosenWarehouse(warehouseId)
   }
 

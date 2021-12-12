@@ -17,8 +17,8 @@ async function getObjectList<T>(url: string): Promise<T[]> {
   return list;
 }
 
-async function getObject<T>(url: string, params?: any): Promise<T> {
-  const response = await get<T>(url, params).catch(function (err) {
+async function getObject<T>(url: string, id: string): Promise<T> {
+  const response = await get<T>(`${url}/${id}`).catch(function (err) {
     handleError(err);
   });
   const obj: T = response?.data ?? {} as unknown as T;
@@ -81,19 +81,19 @@ function handleError(error: any) {
 }
 
 export async function getUnits() {
-  return await getObjectList<Unit>('/Unit/units');
+  return await getObjectList<Unit>('/units');
 }
 
 export async function getRoles() {
-  return await getObjectList<Role>('/Role/roles');
+  return await getObjectList<Role>('/roles');
 }
 
 export async function getProducts() {
-  return await getObjectList<Product>('/Product/products');
+  return await getObjectList<Product>('/Products');
 }
 
 export async function getUsers() {
-  return await getObjectList<User>('/User/users');
+  return await getObjectList<User>('/users');
 }
 
 export async function getSupplies() {
@@ -101,23 +101,23 @@ export async function getSupplies() {
 }
 
 export async function getWarehouses() {
-  return await getObjectList<Warehouse>('/Warehouse/warehouses');
+  return await getObjectList<Warehouse>('/warehouses');
 }
 
-export async function getProduct(id: String) {
-  return await getObject<Product>('/Product', {id: id});
+export async function getProduct(id: string) {
+  return await getObject<Product>('/Products', id);
 }
 
-export async function getUser(id: String) {
-  return await getObject<User>('/User', {id: id});
+export async function getUser(id: string) {
+  return await getObject<User>('/Users', id);
 }
 
-export async function getSupplyWithProducts(id: String) {
-  return await getObject<SupplyWithProducts>(`/supply-with-products/${id}`, {id: id});
+export async function getSupplyWithProducts(id: string) {
+  return await getObject<SupplyWithProducts>('/supply-with-products', id);
 }
 
 export async function createNewProduct<T>(data: T): Promise<PostResponse> {
-  return await createNewObject('/Product', data)
+  return await createNewObject('/Products', data)
 }
 
 export async function createSupplyOrder<T>(data: T): Promise<PostResponse> {
@@ -145,19 +145,19 @@ export async function updateRoles<T>(data: T): Promise<PostResponse> {
 }
 
 export async function updateProduct<T>(data: T): Promise<PostResponse> {
-  return await UpdateObject('/Product', data)
+  return await UpdateObject('/Products', data)
 }
 
 export async function updateUser<T>(data: T): Promise<PostResponse> {
-  return await UpdateObject('/User', data)
+  return await UpdateObject('/Users', data)
 }
 
 export async function deleteProduct(id: string): Promise<PostResponse> {
-  return await deleteObject('/Product', {id: id})
+  return await deleteObject('/Products', {id: id})
 }
 
 export async function deleteUser(id: string): Promise<PostResponse> {
-  return await deleteObject('/User', {id: id})
+  return await deleteObject('/Users', {id: id})
 }
 
 export async function deleteSupply(id: string): Promise<PostResponse> {

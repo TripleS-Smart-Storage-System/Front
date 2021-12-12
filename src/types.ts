@@ -48,7 +48,7 @@ export interface SupplyCreatedUser {
 
 export interface Supply {
   id: string;
-  warehouse: Warehouse;
+  wareHouseId: string;
   supplyCreatedUserId: string;
   acceptUserId: string;
   dateOrdered: Date;
