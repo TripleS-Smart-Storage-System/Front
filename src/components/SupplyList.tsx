@@ -2,21 +2,24 @@ import React from 'react';
 import { Card, Col, Row, Table } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import { PencilFill, TrashFill} from 'react-bootstrap-icons';
-import { Supply } from '../types';
-import { deleteSupply, getSupplies } from '../Utils/Api';
+import { Idable, Supply, Warehouse } from '../types';
+import { deleteSupply, getSupplies, getWarehouses } from '../Utils/Api';
+import NoElements from './NoElements';
 
-class SupplyList extends React.Component<{}, {supplies: Supply[]}> {
+class SupplyList extends React.Component<{}, {supplies: Supply[], warehouses: Warehouse[]}> {
     constructor(props: any) {
         super(props);
         this.state = {
-            supplies: new Array<Supply>()
+            supplies: new Array<Supply>(),
+            warehouses: new Array<Warehouse>()
         }
         this.onClickRemove = this.onClickRemove.bind(this);
     }
   
     async componentDidMount() {
         const supplies = await getSupplies();
-        this.setState({supplies: supplies});
+        const wrehouses = await getWarehouses();
+        this.setState({supplies: supplies, warehouses: wrehouses});
     }
 
     async onClickRemove(productId: string) {
@@ -24,13 +27,18 @@ class SupplyList extends React.Component<{}, {supplies: Supply[]}> {
         await this.componentDidMount();
     }
 
+    getIndexById<T extends Idable>(array: T[], id: string) {
+        return array.findIndex(el => el.id == id)
+    }
+
     render() {
       const supplies = this.state.supplies;
+      const warehouses = this.state.warehouses;
 
       const tbody = supplies.map((s, i) => (
         <tr>
             <td>{i + 1}</td>
-            <td>{s.warehouse?.address ?? ''}</td>
+            <td>{warehouses[this.getIndexById(warehouses, s.wareHouseId)]?.address ?? ''}</td>
             <td>{new Date(s.dateOrdered).toLocaleString()}</td>
             <td>{s.isArrived ? 'Arrived' : 'In progress'}</td>
             <td> 
@@ -75,14 +83,6 @@ class SupplyList extends React.Component<{}, {supplies: Supply[]}> {
         </div>
       );
      }
-}
-
-function NoElements(props: {text: string}) {
-    return (
-        <div className="mh-100">
-            <h2 className="text-secondary text-center py-5">{props.text}</h2>
-        </div>
-    );
 }
 
 export default SupplyList;

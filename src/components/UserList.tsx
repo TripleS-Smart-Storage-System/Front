@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { PencilFill } from 'react-bootstrap-icons';
 import { User } from '../types';
 import { deleteUser, getUsers } from '../Utils/Api';
+import NoElements from './NoElements';
 
 class UserList extends React.Component<{}, {users: User[]}> {
     constructor(props: any) {
@@ -84,14 +85,6 @@ class UserList extends React.Component<{}, {users: User[]}> {
         </div>
       );
      }
-}
-
-function NoElements(props: {text: string}) {
-    return (
-        <div className="mh-100">
-            <h2 className="text-secondary text-center py-5">{props.text}</h2>
-        </div>
-    );
 }
 
 export default UserList;

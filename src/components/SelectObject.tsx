@@ -15,12 +15,11 @@ function SelectObject<T extends INameable>(props: {objects: T[], onSelectedChose
     setIndex(0)
   }, [])
 
-  const handleClick = () => {
+  const handleChosen = (index: number) => {
     const objectId = getIdByIndex(index)
     if (objectId) {
       props.onSelectedChosen(objectId)
-      objects.splice(index, 1);
-      setIndex(0)
+      setIndex(index)
     }
   }
 
@@ -38,7 +37,7 @@ function SelectObject<T extends INameable>(props: {objects: T[], onSelectedChose
         name="objects"
         value={index}
         onChange={(event) => {
-          {setIndex(+event.target.value);}
+          {handleChosen(+event.target.value);}
         }}
         disabled={isDisabled}
       >

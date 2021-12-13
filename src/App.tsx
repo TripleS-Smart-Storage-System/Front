@@ -17,6 +17,10 @@ import Logout from './pages/Logout';
 import Supplies from './pages/Supplies';
 import NewSupplyOrder from './pages/NewSupplyOrder';
 import EditSupplyOrder from './pages/EditSupplyOrder';
+import Warehouses from './pages/Warehouses';
+import NewWarehouse from './pages/NewWarehouse';
+import Relocation from './pages/Relocation';
+import Warehouse from './pages/Warehouse';
 
 const App = () => (
   <div className="app">
@@ -40,6 +44,10 @@ const Main = () => (
       <Route path='/supplies' element={<Supplies />}/>
       <Route path='/supplies/new' element={<NewSupplyOrder />}/>
       <Route path='/supplies/edit/:id' element={<EditSupplyOrder />}/>
+      <Route path='/warehouses' element={<Warehouses />}/>
+      <Route path='/warehouses/:id' element={<Warehouse />}/>
+      <Route path='/warehouses/new' element={<NewWarehouse />}/>
+      <Route path='/relocation' element={<Relocation />}/>
       <Route path='/signup' element={<SignUp />} />
       <Route path='/signin' element={<SignIn />} />
       <Route path='/logout' element={<Logout />} />
