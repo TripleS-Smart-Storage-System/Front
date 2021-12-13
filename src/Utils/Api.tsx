@@ -108,6 +108,10 @@ export async function getBoxes() {
   return await getObjectList<Box>('/Warehouses/boxes');
 }
 
+export async function getWarehouseBoxes(id: string) {
+  return await getObjectList<Box>(`/Warehouses/${id}/boxes`);
+}
+
 export async function getProduct(id: string) {
   return await getObject<Product>('/Products', id);
 }
@@ -118,6 +122,10 @@ export async function getUser(id: string) {
 
 export async function getSupplyWithProducts(id: string) {
   return await getObject<SupplyWithProducts>('/supply-with-products', id);
+}
+
+export async function getWarehouse(id: string) {
+  return await getObject<Warehouse>('/Warehouses', id);
 }
 
 export async function createNewProduct<T>(data: T): Promise<PostResponse> {
