@@ -100,3 +100,13 @@ export interface Warehouse{
   address: string;
   email: string;
 }
+
+export interface Box {
+  id: string;
+  countLeft: number;
+  spoilDate: Date;
+  supplyProductId: string;
+  wareHouseId: string;
+  wareHouse: Warehouse;
+  supplyProduct: SupplyProduct;
+}

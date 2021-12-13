@@ -19,6 +19,7 @@ import NewSupplyOrder from './pages/NewSupplyOrder';
 import EditSupplyOrder from './pages/EditSupplyOrder';
 import Warehouses from './pages/Warehouses';
 import NewWarehouse from './pages/NewWarehouse';
+import Relocation from './pages/Relocation';
 
 const App = () => (
   <div className="app">
@@ -44,6 +45,7 @@ const Main = () => (
       <Route path='/supplies/edit/:id' element={<EditSupplyOrder />}/>
       <Route path='/warehouses' element={<Warehouses />}/>
       <Route path='/warehouses/new' element={<NewWarehouse />}/>
+      <Route path='/relocation' element={<Relocation />}/>
       <Route path='/signup' element={<SignUp />} />
       <Route path='/signin' element={<SignIn />} />
       <Route path='/logout' element={<Logout />} />

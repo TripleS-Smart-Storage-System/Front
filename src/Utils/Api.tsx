@@ -1,4 +1,4 @@
-import { Product, Unit, User, Role, Supply, Warehouse } from '../types';
+import { Product, Unit, User, Role, Supply, Warehouse, Box } from '../types';
 import { del, get, post, put } from './AxiosWrapper'
 import { AxiosResponse } from 'axios';
 import { SupplyWithProducts } from '../types';
@@ -104,6 +104,10 @@ export async function getWarehouses() {
   return await getObjectList<Warehouse>('/warehouses');
 }
 
+export async function getBoxes() {
+  return await getObjectList<Box>('/Warehouses/boxes');
+}
+
 export async function getProduct(id: string) {
   return await getObject<Product>('/Products', id);
 }
@@ -142,6 +146,10 @@ export async function signIn<T>(data: T): Promise<PostResponse> {
 
 export async function updateRoles<T>(data: T): Promise<PostResponse> {
   return await createNewObject('/Account/change-roles', data)
+}
+
+export async function relocateBoxes<T>(data: T): Promise<PostResponse> {
+  return await createNewObject('/Warehouses/relocate', data)
 }
 
 export async function updateProduct<T>(data: T): Promise<PostResponse> {
