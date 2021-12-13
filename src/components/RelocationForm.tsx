@@ -31,7 +31,7 @@ function ChosenBoxes(props: {boxes: Box[], onChosenRoleRemoved: (boxId: string) 
         </Col>
         <Col xs={3}>
           <div className="p-2 border rounded">
-            {box.supplyProduct.count} {box.supplyProduct.product.unit.name}
+            {box.countLeft} {box.supplyProduct.product.unit.name}
           </div>
         </Col>
         <Col>
