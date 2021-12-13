@@ -3,7 +3,6 @@ import { Button, Col, Row, Form, Container } from "react-bootstrap";
 import {useNavigate } from "react-router-dom";
 import { Role, User } from "../types";
 import { getRoles, getUser, updateRoles } from "../Utils/Api";
-import UserList from "./UserList";
 
 
 class Changes {

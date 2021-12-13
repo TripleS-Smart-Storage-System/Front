@@ -1,3 +1,11 @@
+export interface Idable{
+  id: string;
+}
+
+export interface INameable extends Idable{
+  name: string;
+}
+
 export interface Unit {
   id: string;
   name: string
@@ -22,4 +30,83 @@ export interface User {
   surName: string;
   nickName: string;
   roles: Role[];
+}
+
+export interface AcceptUser {
+  id: string;
+  name: string;
+  surName: string;
+  nickName: string;
+}
+
+export interface SupplyCreatedUser {
+  id: string;
+  name: string;
+  surName: string;
+  nickName: string;
+}
+
+export interface Supply {
+  id: string;
+  wareHouseId: string;
+  supplyCreatedUserId: string;
+  acceptUserId: string;
+  dateOrdered: Date;
+  dateAccepted: Date;
+  isArrived: boolean;
+  acceptUser: AcceptUser;
+  supplyCreatedUser: SupplyCreatedUser;
+}
+
+export interface AcceptUser {
+  id: string;
+  name: string;
+  surName: string;
+  nickName: string;
+}
+
+export interface SupplyCreatedUser {
+  id: string;
+  name: string;
+  surName: string;
+  nickName: string;
+}
+
+export interface SupplyProduct {
+  id: string;
+  supplyId: string;
+  productId: string;
+  count: number;
+  isAccepted: boolean;
+  productCreatedDate: Date;
+  product: Product;
+}
+
+export interface SupplyWithProducts{
+  id: string;
+  warehouse: Warehouse;
+  supplyCreatedUserId: string;
+  acceptUserId: string;
+  dateOrdered: Date;
+  dateAccepted: Date;
+  isArrived: boolean;
+  acceptUser: AcceptUser;
+  supplyCreatedUser: SupplyCreatedUser;
+  supplyProducts: SupplyProduct[];
+}
+
+export interface Warehouse{
+  id: string;
+  address: string;
+  email: string;
+}
+
+export interface Box {
+  id: string;
+  countLeft: number;
+  spoilDate: Date;
+  supplyProductId: string;
+  wareHouseId: string;
+  wareHouse: Warehouse;
+  supplyProduct: SupplyProduct;
 }

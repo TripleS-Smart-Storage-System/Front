@@ -1,5 +1,6 @@
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
+import { BadRequest, Unauthorized, AccessDenied, PageNotFound } from './pages/ErrorPages';
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -12,8 +13,14 @@ import ChangeRole from './pages/Roles'
 import EditProduct from './pages/EditProduct';
 import Users from './pages/Users';
 import EditUser from './pages/EditUser';
-import { BadRequest, Unauthorized, AccessDenied, PageNotFound } from './pages/ErrorPages';
 import Logout from './pages/Logout';
+import Supplies from './pages/Supplies';
+import NewSupplyOrder from './pages/NewSupplyOrder';
+import EditSupplyOrder from './pages/EditSupplyOrder';
+import Warehouses from './pages/Warehouses';
+import NewWarehouse from './pages/NewWarehouse';
+import Relocation from './pages/Relocation';
+import Warehouse from './pages/Warehouse';
 
 const App = () => (
   <div className="app">
@@ -34,6 +41,13 @@ const Main = () => (
       <Route path='/products/new' element={<NewProduct />}/>
       <Route path='/products/edit/:id' element={<EditProduct />}/>
       <Route path='/products/:id' element={<Product />}/>
+      <Route path='/supplies' element={<Supplies />}/>
+      <Route path='/supplies/new' element={<NewSupplyOrder />}/>
+      <Route path='/supplies/edit/:id' element={<EditSupplyOrder />}/>
+      <Route path='/warehouses' element={<Warehouses />}/>
+      <Route path='/warehouses/:id' element={<Warehouse />}/>
+      <Route path='/warehouses/new' element={<NewWarehouse />}/>
+      <Route path='/relocation' element={<Relocation />}/>
       <Route path='/signup' element={<SignUp />} />
       <Route path='/signin' element={<SignIn />} />
       <Route path='/logout' element={<Logout />} />

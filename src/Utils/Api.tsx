@@ -1,7 +1,7 @@
-import { Product, Unit, User, Role } from '../types';
+import { Product, Unit, User, Role, Supply, Warehouse, Box } from '../types';
 import { del, get, post, put } from './AxiosWrapper'
 import { AxiosResponse } from 'axios';
-import { rejects } from 'assert';
+import { SupplyWithProducts } from '../types';
 
 
 export interface PostResponse {
@@ -17,8 +17,8 @@ async function getObjectList<T>(url: string): Promise<T[]> {
   return list;
 }
 
-async function getObject<T>(url: string, params?: any): Promise<T> {
-  const response = await get<T>(url, params).catch(function (err) {
+async function getObject<T>(url: string, id: string): Promise<T> {
+  const response = await get<T>(`${url}/${id}`).catch(function (err) {
     handleError(err);
   });
   const obj: T = response?.data ?? {} as unknown as T;
@@ -81,31 +81,67 @@ function handleError(error: any) {
 }
 
 export async function getUnits() {
-  return await getObjectList<Unit>('/Unit/units');
+  return await getObjectList<Unit>('/units');
 }
 
 export async function getRoles() {
-  return await getObjectList<Role>('/Role/roles');
+  return await getObjectList<Role>('/roles');
 }
 
 export async function getProducts() {
-  return await getObjectList<Product>('/Product/products');
+  return await getObjectList<Product>('/Products');
 }
 
 export async function getUsers() {
-  return await getObjectList<User>('/User/users');
+  return await getObjectList<User>('/users');
 }
 
-export async function getProduct(id: String) {
-  return await getObject<Product>('/Product', {id: id});
+export async function getSupplies() {
+  return await getObjectList<Supply>('/supplies');
 }
 
-export async function getUser(id: String) {
-  return await getObject<User>('/User', {id: id});
+export async function getWarehouses() {
+  return await getObjectList<Warehouse>('/warehouses');
+}
+
+export async function getBoxes() {
+  return await getObjectList<Box>('/Warehouses/boxes');
+}
+
+export async function getWarehouseBoxes(id: string) {
+  return await getObjectList<Box>(`/Warehouses/${id}/boxes`);
+}
+
+export async function getProduct(id: string) {
+  return await getObject<Product>('/Products', id);
+}
+
+export async function getUser(id: string) {
+  return await getObject<User>('/Users', id);
+}
+
+export async function getSupplyWithProducts(id: string) {
+  return await getObject<SupplyWithProducts>('/supply-with-products', id);
+}
+
+export async function getWarehouse(id: string) {
+  return await getObject<Warehouse>('/Warehouses', id);
 }
 
 export async function createNewProduct<T>(data: T): Promise<PostResponse> {
-  return await createNewObject('/Product', data)
+  return await createNewObject('/Products', data)
+}
+
+export async function createSupplyOrder<T>(data: T): Promise<PostResponse> {
+  return await createNewObject('/Supply', data)
+}
+
+export async function createSupplyProductOrder<T>(data: T): Promise<PostResponse> {
+  return await createNewObject('/supply-product', data)
+}
+
+export async function createNewWarehouse<T>(data: T): Promise<PostResponse> {
+  return await createNewObject('/warehouses', data)
 }
 
 export async function signUp<T>(data: T): Promise<PostResponse> {
@@ -120,18 +156,30 @@ export async function updateRoles<T>(data: T): Promise<PostResponse> {
   return await createNewObject('/Account/change-roles', data)
 }
 
+export async function relocateBoxes<T>(data: T): Promise<PostResponse> {
+  return await createNewObject('/Warehouses/relocate', data)
+}
+
 export async function updateProduct<T>(data: T): Promise<PostResponse> {
-  return await UpdateObject('/Product', data)
+  return await UpdateObject('/Products', data)
 }
 
 export async function updateUser<T>(data: T): Promise<PostResponse> {
-  return await UpdateObject('/User', data)
+  return await UpdateObject('/Users', data)
 }
 
 export async function deleteProduct(id: string): Promise<PostResponse> {
-  return await deleteObject('/Product', {id: id})
+  return await deleteObject('/Products', {id: id})
 }
 
 export async function deleteUser(id: string): Promise<PostResponse> {
-  return await deleteObject('/User', {id: id})
+  return await deleteObject('/Users', {id: id})
+}
+
+export async function deleteSupply(id: string): Promise<PostResponse> {
+  return await deleteObject('/Supply', {id: id})
+}
+
+export async function deleteSupplyProduct(id: string): Promise<PostResponse> {
+  return await deleteObject('/supply-product', {id: id})
 }

@@ -4,6 +4,18 @@ import { NavLink } from 'react-router-dom';
 import { Container, Nav, Navbar } from 'react-bootstrap';
 import { isAuthorized } from '../Utils/Common';
 
+function CommonPages() {
+    return (
+        <div>
+            <NavLink to="/users">Users</NavLink>
+            <NavLink to="/products">Products</NavLink>
+            <NavLink to="/supplies">Supplies</NavLink>
+            <NavLink to="/warehouses">Warehouses</NavLink>
+            <NavLink to="/relocation">Relocation</NavLink>
+        </div>
+    );
+}
+
 function Header() {
     const isLoggedIn: boolean = isAuthorized()
     return (
@@ -20,14 +32,11 @@ function Header() {
             <Navbar.Brand href="/">TripleS</Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="me-auto">
-                        {isLoggedIn && (
-                            <div>
-                                <NavLink to="/users">Users</NavLink>
-                                <NavLink to="/products">Products</NavLink>
-                            </div>
-                        )}
-                    </Nav>
+                <Nav className="me-auto">
+                    {isLoggedIn && (
+                        <CommonPages />
+                    )}
+                </Nav>
                 <Nav>
                     {isLoggedIn ?
                         (<NavLink to="/logout">Log Out</NavLink>) :

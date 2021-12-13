@@ -19,9 +19,9 @@ code {
 }
 
 .main{
-  max-width: 960px;
+  min-width: 80vw;
   margin: 0 auto;
-  padding: 20px 20px;
+  padding: 20px 100px;
 }
 
 .footer {
