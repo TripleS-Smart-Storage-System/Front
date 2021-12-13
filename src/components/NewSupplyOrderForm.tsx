@@ -163,7 +163,7 @@ function NewSupplyOrderForm() {
     async function fetchApi() {
       const products = await getProducts();
       setProducts(products);
-      setUnchosenProducts(products);
+      setUnchosenProducts(products.slice(0));
       if (products.length == 0) {
         setError("We don't have any products.");
       }
@@ -209,9 +209,10 @@ function NewSupplyOrderForm() {
   };
 
   const removeChosenProduct = (productId: string) => {
-    setChosenProducts(chosenProducts.filter(p => p.id != productId))
-    const product = products.find(p => p.id == productId)!
-    setUnchosenProducts(unchosenProducts.concat([]))
+    const newChosenProducts = chosenProducts.filter(p => p.id != productId)
+    setChosenProducts(newChosenProducts)
+    const newUnchosenProducts = products.filter(p => !newChosenProducts.map(cp => cp.id).includes(p.id))
+    setUnchosenProducts(newUnchosenProducts)
   }
 
   const choseSelectedProduct = (productId: string, count: number) => {

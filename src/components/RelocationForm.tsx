@@ -116,18 +116,20 @@ function NewSupplyOrderForm() {
 
   useEffect(() => {
     async function fetchApi() {
+      const warehouses = await getWarehouses();
+      if (warehouses.length == 0) {
+        setError("We don't have any warehouses.");
+        return
+      } else {
+        setWarehouses(warehouses)
+        setChosenWarehouse(warehouses[0].id)
+      }
+
       const boxes = await getBoxes();
       setBoxes(boxes);
       setUnchosenBoxes(boxes.slice(0));
       if (boxes.length == 0) {
         setError("We don't have any boxes.");
-      }
-      const warehouses = await getWarehouses();
-      if (warehouses.length == 0) {
-        setError("We don't have any warehouses.");
-      } else {
-        setWarehouses(warehouses)
-        setChosenWarehouse(warehouses[0].id)
       }
     }
 
@@ -150,14 +152,12 @@ function NewSupplyOrderForm() {
 
   const removeChosenProduct = (boxId: string) => {
     const box = boxes.find(p => p.id == boxId)!
-    console.log(boxId, box, boxes)
     setChosenBoxes(chosenBoxes.filter(p => p.id != boxId))
     setUnchosenBoxes(unchosenBoxes.concat([box]))
   }
 
   const choseSelectedProduct = (boxId: string) => {
     const box = boxes.find(p => p.id === boxId)!
-    console.log(boxId, box, boxes)
     setChosenBoxes(chosenBoxes.concat([box]))
     setUnchosenBoxes(unchosenBoxes.filter(p => p.id != boxId))
   }
