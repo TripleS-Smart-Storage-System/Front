@@ -55,10 +55,12 @@ class Statistics extends React.Component<{}, { users: User[]; supplies: Supply[]
     }
     const numUsers = users.length;
     const obj = JSON.stringify(supplies, undefined, "\t");
+    if (data.length == 1) {
     warehousesInfo.forEach(function (value, key) {
       s = s + " - " + key + ": " + value + "\n";
       data.push({address: key, numOrders: value});
     });
+  }
     console.log(s);
     return (
       <div>
