@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Col, Row, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Box, Warehouse } from "../types";
 import {
   getBoxes,
@@ -167,26 +168,26 @@ function NewSupplyOrderForm() {
     setChosenBoxes(new Array<Box>())
     setUnchosenBoxes(boxes.filter(b => b.wareHouseId != warehouseId))
   }
-
+  const { t } = useTranslation();
   return (
     <Form onSubmit={handleSubmit}>
       <div className="text-danger">
         <h6>{error}</h6>
       </div>
       <Form.Group className="mb-3">
-        <Form.Label>Destination warehouse: </Form.Label>
+        <Form.Label>{t("Destination warehouse:")} </Form.Label>
         <SelectObject objects={warehouses.map(w => {return {id: w.id, name: w.address}})} onSelectedChosen={choseSelectedWarehouse} />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicRole">
-        <Form.Label>Available boxes: </Form.Label>
+        <Form.Label>{t("Available boxes:")} </Form.Label>
         <SelectBoxes boxes={unchosenBoxes} onSelectedChosen={choseSelectedProduct} />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formNewSupply">
-        <Form.Label>Chosen boxes:</Form.Label>
+        <Form.Label>{t("Chosen boxes:")}</Form.Label>
         <ChosenBoxes boxes={chosenBoxes} onChosenRoleRemoved={removeChosenProduct} />
       </Form.Group>
       <Button variant="primary" type="submit">
-        Relocate
+        {t("Relocate")}
       </Button>
     </Form>
   );

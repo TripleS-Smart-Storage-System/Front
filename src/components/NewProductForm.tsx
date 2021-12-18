@@ -1,10 +1,10 @@
-import axios from 'axios';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import config from '../config'
 import { Button, Form } from 'react-bootstrap';
 import { Navigate, useNavigate } from "react-router-dom";
 import { Unit } from '../types';
 import { createNewProduct, getUnits } from '../Utils/Api';
+import { useTranslation } from "react-i18next";
 
 
 class Input {
@@ -53,12 +53,12 @@ function NewProducForm() {
       navigate('/products');
     }
   }
-
+  const { t } = useTranslation();
   return (
     <Form onSubmit={handleSubmit} action="/products">
       <div className="text-danger"><h6>{error}</h6></div>
       <Form.Group className="mb-3" controlId="formBasicName">
-        <Form.Label>Name</Form.Label>
+        <Form.Label>{t("name")}: </Form.Label>
         <Form.Control
           id="name"
           name="name"
@@ -66,11 +66,11 @@ function NewProducForm() {
           onChange={(event) => {setValues({...input, name: event.target.value});}}
           required
           type="text"
-          placeholder="Enter name"
+          placeholder={t("Enter name")}
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicUnit">
-        <Form.Label>Unit</Form.Label>
+        <Form.Label>{t("Unit: ")}</Form.Label>
         <Form.Select
           id="units"
           name="units"
@@ -82,7 +82,7 @@ function NewProducForm() {
         </Form.Select>
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicShelfLife">
-        <Form.Label>Shelf life</Form.Label>
+        <Form.Label>{t("Shelf life: ")}</Form.Label>
         <Form.Control
           id="shelfLife"
           name="shelfLife"
@@ -96,7 +96,7 @@ function NewProducForm() {
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicDescription">
-        <Form.Label>Description</Form.Label>
+        <Form.Label>{t("Description: ")}</Form.Label>
         <Form.Control
           id="description"
           name="description"
@@ -105,10 +105,10 @@ function NewProducForm() {
           as="textarea"
           required
           rows={3}
-          placeholder="Enter description" />
+          placeholder={t("Enter description")} />
       </Form.Group>
       <Button variant="primary" type="submit">
-        Submit
+        {t("Submit")}
       </Button>      
     </Form>
   );

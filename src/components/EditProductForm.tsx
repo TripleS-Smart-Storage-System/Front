@@ -3,6 +3,7 @@ import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import { Product, Unit } from '../types';
 import { getProduct, getUnits, updateProduct } from '../Utils/Api'
+import { useTranslation } from "react-i18next";
 
 
 class Input {
@@ -62,14 +63,14 @@ function EditProducForm(props: {productId: string}) {
       navigate('/products')
     }
   }
-    
+  const { t } = useTranslation();
   return (
     <Form onSubmit={handleSubmit} action="/products">
       <div className="text-danger">
         <h6>{error}</h6>
       </div>
       <Form.Group className="mb-3" controlId="formBasicName">
-        <Form.Label>Name</Form.Label>
+        <Form.Label>{t("Name")}</Form.Label>
         <Form.Control
           id="name"
           name="name"
@@ -77,18 +78,18 @@ function EditProducForm(props: {productId: string}) {
           onChange={e => {setValues({...input, name: e.target.value});}}
           required
           type="text"
-          placeholder="Enter name"
+          placeholder={t("Enter name")}
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicUnit">
-        <Form.Label>Unit</Form.Label>
+        <Form.Label>{t("Unit: ")}</Form.Label>
         <Form.Select
           id="units"
           name="units"
           value={input.unitId}
           onChange={e => {setValues({...input, unitId: e.target.value})}}
           required
-          placeholder="Enter unit"
+          placeholder={t("Enter unit")}
         >
         {units.map((unit) =>
           <option selected={input.unitId == unit.id} value={unit.id} id={unit.id} key={unit.name}>{unit.name}</option>
@@ -96,7 +97,7 @@ function EditProducForm(props: {productId: string}) {
         </Form.Select>
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicShelfLife">
-        <Form.Label>Shelf life</Form.Label>
+        <Form.Label>{t("Shelf life: ")}</Form.Label>
         <Form.Control
           id="shelfLife"
           name="shelfLife"
@@ -106,11 +107,11 @@ function EditProducForm(props: {productId: string}) {
           type="number"
           min="1"
           max="365250"
-          placeholder="Enter shelf life (days)"
+          placeholder={t("Enter shelf life (days)")}
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicDescription">
-        <Form.Label>Description</Form.Label>
+        <Form.Label>{t("Description: ")}</Form.Label>
         <Form.Control
           id="description"
           name="description"
@@ -119,10 +120,10 @@ function EditProducForm(props: {productId: string}) {
           as="textarea"
           required
           rows={3}
-          placeholder="Enter description" />
+          placeholder={t("Enter description")} />
       </Form.Group>
       <Button variant="primary" type="submit">
-        Edit
+        {t("Submit")}
       </Button>      
     </Form>
   );

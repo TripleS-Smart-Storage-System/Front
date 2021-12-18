@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Col, Row, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Product,
   SupplyProduct,
@@ -193,18 +194,18 @@ function EditSupplyOrderForm(props: {supplyId: string}) {
       return true
     }
   }
-
+  const { t } = useTranslation();
   return (
     <Form onSubmit={handleSubmit}>
       <div className="text-danger">
         <h6>{error}</h6>
       </div>
       <Form.Group className="mb-3" controlId="formBasicRole">
-        <Form.Label>Available products: </Form.Label>
+        <Form.Label>{t("Available products")}: </Form.Label>
         <SelectProducts products={unchosenProducts} supplyId={supplyId} onSelectedChosen={choseSelectedProduct} />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formNewSupply">
-        <Form.Label>Chosen products:</Form.Label>
+        <Form.Label>{t("Chosen products")}:</Form.Label>
         <ChosenProducts products={chosenProducts} onChosenRoleRemoved={removeChosenProduct} />
       </Form.Group>
     </Form>

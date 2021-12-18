@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { Button, Col, Row, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Product, Warehouse } from "../types";
+import { useTranslation } from "react-i18next";
 import {
   createSupplyOrder,
   createSupplyProductOrder,
@@ -70,10 +71,10 @@ function ChosenProducts(props: {products: ProductWithCount[], onChosenRoleRemove
       </Row>
     </div>
   ));
-
+  const { t } = useTranslation();
   return (
     <div>
-      {options.length ? options : (<div className="text-secondary">No chosen products</div>)}
+      {options.length ? options : (<div className="text-secondary">{t("No chosen products")}</div>)}
     </div>
   );
 }
@@ -225,26 +226,26 @@ function NewSupplyOrderForm() {
     console.log(warehouseId)
     setChosenWarehouse(warehouseId)
   }
-
+  const { t } = useTranslation();
   return (
     <Form onSubmit={handleSubmit}>
       <div className="text-danger">
         <h6>{error}</h6>
       </div>
       <Form.Group className="mb-3">
-        <Form.Label>Warehouse: </Form.Label>
+        <Form.Label>{t("Warehouse")}: </Form.Label>
         <SelectObject objects={warehouses.map(w => {return {id: w.id, name: w.address}})} onSelectedChosen={choseSelectedWarehouse} />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicRole">
-        <Form.Label>Available products: </Form.Label>
+        <Form.Label>{t("Available products")}: </Form.Label>
         <SelectProducts products={unchosenProducts} onSelectedChosen={choseSelectedProduct} />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formNewSupply">
-        <Form.Label>Chosen products:</Form.Label>
+        <Form.Label>{t("Chosen products")}: </Form.Label>
         <ChosenProducts products={chosenProducts} onChosenRoleRemoved={removeChosenProduct} />
       </Form.Group>
       <Button variant="primary" type="submit">
-        Save
+        {t("Save")}
       </Button>
     </Form>
   );

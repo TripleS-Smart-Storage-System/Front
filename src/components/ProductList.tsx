@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React from 'react';
 import config from '../config'
 import empty from '../images/empty.png'
@@ -8,8 +7,12 @@ import { PencilFill, TrashFill} from 'react-bootstrap-icons';
 import { Product } from '../types';
 import { deleteProduct, getProducts } from '../Utils/Api';
 import NoElements from './NoElements';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-class ProductList extends React.Component<{}, {products: Product[]}> {
+interface IProps extends WithTranslation {
+    prop: any;
+  }
+class ProductList extends React.Component<IProps, {products: Product[]}> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -27,7 +30,6 @@ class ProductList extends React.Component<{}, {products: Product[]}> {
         await deleteProduct(productId);
         await this.componentDidMount();
     }
-
     render() {
       const products = this.state.products; 
 
@@ -58,19 +60,19 @@ class ProductList extends React.Component<{}, {products: Product[]}> {
                     <Row>
                         <Col>
                             <div className="p-2 m-1 border rounded">
-                                Description: {p.description}
+                            {this.props.t('Description: ')} {p.description}
                             </div>
                         </Col>
                     </Row>
                     <Row xs="auto" className="justify-content-between">
                         <Col>
                             <div className="p-2 m-1 border rounded">
-                                Unit: {p.unit.name}
+                            {this.props.t('Unit: ')} {p.unit.name}
                             </div>
                         </Col>
                         <Col>
                             <div className="p-2 m-1 border rounded">
-                                Shelf life: {p.shelfLife}
+                            {this.props.t('Shelf life: ')} {p.shelfLife}
                             </div>
                         </Col>
                     </Row>
@@ -94,4 +96,4 @@ class ProductList extends React.Component<{}, {products: Product[]}> {
      }
 }
 
-export default ProductList;
+export default withTranslation()(ProductList);

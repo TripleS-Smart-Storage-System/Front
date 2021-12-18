@@ -3,8 +3,12 @@ import { Row, Table } from 'react-bootstrap';
 import { Box, Warehouse } from '../types';
 import { getWarehouse, getWarehouseBoxes, getWarehouses } from '../Utils/Api';
 import NoElements from './NoElements';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-class BoxList extends React.Component<{warehouseId: string}, {boxes: Box[], warehouse: Warehouse}> {
+interface IProps extends WithTranslation {
+    prop: any;
+  }
+class BoxList extends React.Component<{warehouseId: string}, {boxes: Box[], warehouse: Warehouse}, IProps> {
     constructor(props: {warehouseId: string}) {
         super(props);
         this.state = {
@@ -63,4 +67,4 @@ class BoxList extends React.Component<{warehouseId: string}, {boxes: Box[], ware
      }
 }
 
-export default BoxList;
+export default withTranslation()(BoxList);

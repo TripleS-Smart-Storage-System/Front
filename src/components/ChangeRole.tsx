@@ -3,6 +3,7 @@ import { Button, Col, Row, Form, Container } from "react-bootstrap";
 import {useNavigate } from "react-router-dom";
 import { Role, User } from "../types";
 import { getRoles, getUser, updateRoles } from "../Utils/Api";
+import { useTranslation } from "react-i18next";
 
 
 class Changes {
@@ -137,25 +138,25 @@ function ChangeRoleForm(props: { userId: string }) {
     setCurrentRoles(chosenRoles)
     setUnchosenRoles(roles.filter(r => !chosenRoles.map(cr => cr.id).includes(r.id)))
   }
-
+  const { t } = useTranslation();
   return (
     <Form onSubmit={handleSubmit}>
       <div className="text-danger">
         <h6>{error}</h6>
       </div>
       <div>
-        <h6>Nickname: {user.nickName}</h6>
+        <h6>{t("Nickname: ")} {user.nickName}</h6>
       </div>
       <Form.Group className="mb-3" controlId="formBasicRole">
-        <Form.Label>Available roles: </Form.Label>
+        <Form.Label>{t("Available roles")}: </Form.Label>
         <SelectRoles roles={unchosenRoles} onSelectedChosen={choseSelectedRole} />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formCurrentRole">
-        <Form.Label>Chosen roles:</Form.Label>
+        <Form.Label>{t("Chosen roles: ")}</Form.Label>
         <ChosenRoles roles={currentRoles} onChosenRoleRemoved={removeChosenRole} />
       </Form.Group>
       <Button variant="primary" type="submit">
-        Save
+        {t("Save")}
       </Button>
     </Form>
   );

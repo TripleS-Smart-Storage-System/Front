@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { signIn } from "../Utils/Api";
 import { setUserSession } from "../Utils/Common";
-
+import { useTranslation } from "react-i18next";
 
 class Input {
   email: string = "";

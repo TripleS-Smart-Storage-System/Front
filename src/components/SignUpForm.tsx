@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { signUp } from '../Utils/Api';
+import { useTranslation } from "react-i18next";
 
 
 class Input {
