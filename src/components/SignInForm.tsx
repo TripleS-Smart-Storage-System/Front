@@ -30,14 +30,14 @@ function SignInForm() {
       window.location.href = "/";
     }
   };
-
+  const { t } = useTranslation();
   return (
     <Form onSubmit={handleSubmit} action="/">
       <div className="text-danger">
         <h6>{error}</h6>
       </div>
       <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
+        <Form.Label>{t("Email address")}</Form.Label>
         <Form.Control
           id="email"
           name="email"
@@ -47,11 +47,11 @@ function SignInForm() {
           }}
           required
           type="email"
-          placeholder="Enter email"
+          placeholder={t("Enter email")}
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
+        <Form.Label>{t("Password")}</Form.Label>
         <Form.Control
           id="password"
           name="password"
@@ -61,11 +61,11 @@ function SignInForm() {
           }}
           required
           type="password"
-          placeholder="Enter password"
+          placeholder={t("Enter password")}
         />
       </Form.Group>
       <Button variant="primary" type="submit">
-        Submit
+        {t("Submit")}
       </Button>
     </Form>
   );
