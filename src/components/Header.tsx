@@ -21,20 +21,12 @@ function CommonPages() {
     const { t } = useTranslation();
     return (
         <div>
-<<<<<<< Updated upstream
-            <NavLink to="/users">Users</NavLink>
-            <NavLink to="/products">Products</NavLink>
-            <NavLink to="/supplies">Supplies</NavLink>
-            <NavLink to="/warehouses">Warehouses</NavLink>
-            <NavLink to="/relocation">Relocation</NavLink>
-=======
             <NavLink to="/users">{t("Users")}</NavLink>
             <NavLink to="/products">{t("Products")}</NavLink>
             <NavLink to="/supplies">{t("Supplies")}</NavLink>
             <NavLink to="/warehouses">{t("Warehouses")}</NavLink>
             <NavLink to="/relocation">{t("Relocation")}</NavLink>
             <NavLink to="/statistics">{t("Statistics")}</NavLink>
->>>>>>> Stashed changes
         </div>
     );
 }

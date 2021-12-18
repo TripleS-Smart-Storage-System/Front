@@ -21,6 +21,7 @@ import Warehouses from './pages/Warehouses';
 import NewWarehouse from './pages/NewWarehouse';
 import Relocation from './pages/Relocation';
 import Warehouse from './pages/Warehouse';
+import Statistics from './pages/Statistics';
 
 const App = () => (
   <div className="app">
@@ -47,6 +48,7 @@ const Main = () => (
       <Route path='/warehouses' element={<Warehouses />}/>
       <Route path='/warehouses/:id' element={<Warehouse />}/>
       <Route path='/warehouses/new' element={<NewWarehouse />}/>
+      <Route path='/statistics' element={<Statistics />}/>
       <Route path='/relocation' element={<Relocation />}/>
       <Route path='/signup' element={<SignUp />} />
       <Route path='/signin' element={<SignIn />} />
