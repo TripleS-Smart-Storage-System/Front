@@ -12,6 +12,7 @@ function CommonPages() {
             <NavLink to="/supplies">Supplies</NavLink>
             <NavLink to="/warehouses">Warehouses</NavLink>
             <NavLink to="/relocation">Relocation</NavLink>
+            <NavLink to="/statistics">Statistics</NavLink>
         </div>
     );
 }

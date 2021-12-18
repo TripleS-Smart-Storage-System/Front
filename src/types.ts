@@ -101,6 +101,11 @@ export interface Warehouse{
   email: string;
 }
 
+export interface WarehouseData{
+  address: string;
+  numOrders: number;
+}
+
 export interface Box {
   id: string;
   countLeft: number;
