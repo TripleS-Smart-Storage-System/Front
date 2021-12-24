@@ -7,14 +7,13 @@ import { useTranslation } from "react-i18next";
 import i18n from '../services/i18n';
 
 function changeLangUA() {
-    
-       i18n.changeLanguage("ua");
-     
+    sessionStorage.setItem('localization', 'ua');
+    i18n.changeLanguage("ua");
 }
 
 function changeLangEN() {
-    
-       i18n.changeLanguage("en");
+    sessionStorage.setItem('localization', 'en');
+    i18n.changeLanguage("en");
 }
 
 function CommonPages() {

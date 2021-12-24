@@ -26,3 +26,7 @@ export const isAuthorized = () => {
   const token = getToken()
   return token != null;
 }
+
+export const getLocalization = () => {
+  return sessionStorage.getItem('localization') || 'ua';
+}
