@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { createNewWarehouse } from "../Utils/Api";
+import { useTranslation } from "react-i18next";
 
 
 class Input {
@@ -28,14 +29,14 @@ function NewWarehouseForm() {
       navigate('/warehouses')
     }
   };
-
+  const { t } = useTranslation();
   return (
     <Form onSubmit={handleSubmit} action="/">
       <div className="text-danger">
         <h6>{error}</h6>
       </div>
       <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
+        <Form.Label>{t("Email address")}</Form.Label>
         <Form.Control
           id="email"
           name="email"
@@ -45,11 +46,11 @@ function NewWarehouseForm() {
           }}
           required
           type="email"
-          placeholder="Enter email"
+          placeholder={t("Enter email")}
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicAddress">
-        <Form.Label>Address</Form.Label>
+        <Form.Label>{t("Address")}</Form.Label>
         <Form.Control
           id="address"
           name="address"
@@ -59,11 +60,11 @@ function NewWarehouseForm() {
           }}
           required
           type="text"
-          placeholder="Enter address"
+          placeholder={t("Enter address")}
         />
       </Form.Group>
       <Button variant="primary" type="submit">
-        Save
+        {t("Save")}
       </Button>
     </Form>
   );

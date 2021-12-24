@@ -4,8 +4,12 @@ import { Link } from 'react-router-dom';
 import { Warehouse } from '../types';
 import { getWarehouses } from '../Utils/Api';
 import NoElements from './NoElements';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-class WarehouseList extends React.Component<{}, {warehouses: Warehouse[]}> {
+interface IProps extends WithTranslation {
+    prop: any;
+  }
+class WarehouseList extends React.Component<IProps, {warehouses: Warehouse[]}>  {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -20,7 +24,7 @@ class WarehouseList extends React.Component<{}, {warehouses: Warehouse[]}> {
 
     render() {
       const warehouses = this.state.warehouses;
-
+      
       const tbody = warehouses.map((w, i) => (
         <tr>
             <td>{i + 1}</td>
@@ -36,8 +40,8 @@ class WarehouseList extends React.Component<{}, {warehouses: Warehouse[]}> {
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Address</th>
-                            <th>Email</th>
+                            <th>{this.props.t('Address')}</th>
+                            <th>{this.props.t('Email')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,4 +58,4 @@ class WarehouseList extends React.Component<{}, {warehouses: Warehouse[]}> {
     }
 }
 
-export default WarehouseList;
+export default withTranslation()(WarehouseList);

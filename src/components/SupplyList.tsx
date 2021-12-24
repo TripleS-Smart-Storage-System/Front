@@ -5,8 +5,12 @@ import { PencilFill, TrashFill} from 'react-bootstrap-icons';
 import { Idable, Supply, Warehouse } from '../types';
 import { deleteSupply, getSupplies, getWarehouses } from '../Utils/Api';
 import NoElements from './NoElements';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-class SupplyList extends React.Component<{}, {supplies: Supply[], warehouses: Warehouse[]}> {
+interface IProps extends WithTranslation {
+    prop: any;
+  }
+class SupplyList extends React.Component<IProps, {supplies: Supply[], warehouses: Warehouse[]}> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -65,9 +69,9 @@ class SupplyList extends React.Component<{}, {supplies: Supply[], warehouses: Wa
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Warehouse</th>
-                            <th>Creation date</th>
-                            <th>Status</th>
+                            <th>{this.props.t('Warehouse')}</th>
+                            <th>{this.props.t('Creation date')}</th>
+                            <th>{this.props.t('Status')}</th>
                             <th style={{width: '10%'}}></th>
                         </tr>
                     </thead>
@@ -85,4 +89,4 @@ class SupplyList extends React.Component<{}, {supplies: Supply[], warehouses: Wa
      }
 }
 
-export default SupplyList;
+export default withTranslation()(SupplyList);

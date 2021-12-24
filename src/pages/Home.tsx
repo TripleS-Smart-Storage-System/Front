@@ -1,9 +1,14 @@
 import '../App.css';
+import { useTranslation } from "react-i18next";
 
-const Home = () => (
+
+function Home(){
+  const { t } = useTranslation();
+  return(
     <div className='home'>
-      <h1>Home page</h1>
+      <h1>{t("Home page")}</h1>
     </div>
-);
+  );
+}
 
 export default Home;

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { signUp } from '../Utils/Api';
+import { useTranslation } from "react-i18next";
 
 
 class Input {
@@ -57,14 +58,14 @@ function SignUpForm() {
       }  
       return isValid;
   }
-     
+  const { t } = useTranslation(); 
   return (
     <Form onSubmit={handleSubmit}>
       <div className="text-danger">
         <h6>{errors.message}</h6>
       </div>
       <Form.Group className="mb-3" controlId="formBasicName">
-        <Form.Label>Name</Form.Label>
+        <Form.Label>{t("Name")}</Form.Label>
         <Form.Control
           id="name"
           name="name"
@@ -72,11 +73,11 @@ function SignUpForm() {
           onChange={(e) => {setValues({...input, name: e.target.value})}}
           required
           type="text"
-          placeholder="Enter name"
+          placeholder={t("Enter name")}
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicSurname">
-        <Form.Label>Surname</Form.Label>
+        <Form.Label>{t("Surname")}</Form.Label>
         <Form.Control
           id="surname"
           name="surname"
@@ -84,11 +85,11 @@ function SignUpForm() {
           onChange={(e) => {setValues({...input, surname: e.target.value})}}
           required
           type="text"
-          placeholder="Enter surname"
+          placeholder={t("Enter surname")}
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
+        <Form.Label>{t("Email address")}</Form.Label>
         <Form.Control
           id="email"
           name="email"
@@ -96,13 +97,13 @@ function SignUpForm() {
           onChange={(e) => {setValues({...input, email: e.target.value})}}
           required
           type="email"
-          placeholder="Enter email" />
+          placeholder={t("Enter email")} />
         <Form.Text className="text-muted">
-          We'll never share your email with anyone else.
+          {t("We'll never share your email with anyone else.")}
         </Form.Text>
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicPassword">
-        <Form.Label>Password</Form.Label>
+        <Form.Label>{t("Password")}</Form.Label>
         <Form.Control
           id="password"
           name="password"
@@ -110,11 +111,11 @@ function SignUpForm() {
           onChange={(e) => {setValues({...input, password: e.target.value})}}
           required
           type="password"
-          placeholder="Enter password"
+          placeholder={t("Enter password")}
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
-        <Form.Label>Confirm password</Form.Label>
+        <Form.Label>{t("Confirm password")}</Form.Label>
         <Form.Control
           id="confirm_password"
           name="confirm_password"
@@ -122,7 +123,7 @@ function SignUpForm() {
           onChange={(e) => {setValues({...input, confirm_password: e.target.value})}}
           required
           type="password"
-          placeholder="Enter password again"
+          placeholder={t("Enter password again")}
         />
         <div className="text-danger">{errors.confirm_password}</div>
       </Form.Group>
@@ -133,10 +134,10 @@ function SignUpForm() {
           required
           name="agreement"
           type="checkbox"
-          label="I agree with terms and conditions" />
+          label={t("I agree with terms and conditions")} />
       </Form.Group>
       <Button variant="primary" type="submit">
-        Submit
+        {t("Submit")}
       </Button>      
     </Form>
   );

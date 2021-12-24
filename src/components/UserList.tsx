@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React from 'react';
 import config from '../config'
 import { Card, Col, Row } from 'react-bootstrap';
@@ -7,8 +6,12 @@ import { PencilFill } from 'react-bootstrap-icons';
 import { User } from '../types';
 import { deleteUser, getUsers } from '../Utils/Api';
 import NoElements from './NoElements';
+import { useTranslation, withTranslation, WithTranslation } from "react-i18next";
 
-class UserList extends React.Component<{}, {users: User[]}> {
+interface IProps extends WithTranslation {
+    prop: any;
+  }
+class UserList extends React.Component<IProps, {users: User[]}> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -54,7 +57,7 @@ class UserList extends React.Component<{}, {users: User[]}> {
                     <Row>
                         <Col>
                             <div className="p-2 m-1 border rounded">
-                                Nickname: {p.nickName}
+                            {this.props.t('Nickname: ')} {p.nickName}
                             </div>
                         </Col>
                     </Row>
@@ -62,7 +65,7 @@ class UserList extends React.Component<{}, {users: User[]}> {
                         <Col>
                             <Link to={`roles/edit/${p.id}`} style={{ textDecoration: 'none' }}>
                                 <div className="p-2 m-1 border rounded">
-                                    Roles: {p.roles.map(r => r.name).join(', ')}
+                                {this.props.t('Roles: ')} {p.roles.map(r => r.name).join(', ')}
                                 </div>
                             </Link>
                         </Col>
@@ -87,4 +90,4 @@ class UserList extends React.Component<{}, {users: User[]}> {
      }
 }
 
-export default UserList;
+export default withTranslation()(UserList);

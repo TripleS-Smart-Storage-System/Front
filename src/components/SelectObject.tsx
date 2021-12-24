@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { INameable } from "../types";
-
+import { useTranslation } from "react-i18next";
 
 function SelectObject<T extends INameable>(props: {objects: T[], onSelectedChosen: (id: string) => void}) {
   const objects = props.objects;
