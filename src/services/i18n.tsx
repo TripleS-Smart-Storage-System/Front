@@ -57,6 +57,7 @@ const resources = {
       "No chosen products": "No chosen products",
       "Enter description": "Enter description",
       "Enter shelf life (days)": "Enter shelf life (days)",
+      "Home page": "Home page",
     },
   },
   ua: {
@@ -112,7 +113,8 @@ const resources = {
       "Confirm password": "Підтвердіть пароль",
       "I agree with terms and conditions": "Я погоджуюся з умовами використання",
       "Sign In": "Увійти",
-      "Sign Up": "Вийти",
+      "Sign Up": "Зареєструватись",
+      "Home page": "Домашня сторінка"
     },
   },
 };

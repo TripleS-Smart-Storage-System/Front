@@ -60,8 +60,8 @@ function Header() {
                         (<NavLink to="/logout">{t("Log Out")}</NavLink>) :
                         (
                             <div>
-                                <NavLink to="/signin">Sign In</NavLink>
-                                <NavLink to="/signup">Sign Up</NavLink>
+                                <NavLink to="/signin">{t("Sign In")}</NavLink>
+                                <NavLink to="/signup">{t("Sign Up")}</NavLink>
                             </div>
                         )
                     }
